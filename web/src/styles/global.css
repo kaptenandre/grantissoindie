@@ -1,11 +1,21 @@
 /* Design TBD: structural styles only. Swap tokens when the design lands. */
+
+/* AUTHENTIC Sans (free license). Missing å/Å, which fall back to the next font in the stack. */
+@font-face {
+  font-family: 'AUTHENTIC Sans Condensed';
+  src: url('/fonts/authentic-sans-condensed-60.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --fg: #fff;
   --bg: #000;
   --muted: rgb(255 255 255 / 0.7);
   --accent: #fff;
   --overlay: rgb(0 0 0 / 0.35);
-  --font-sans: system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'AUTHENTIC Sans Condensed', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
   --gutter: clamp(16px, 4vw, 40px);
   color-scheme: dark;
 }
@@ -25,6 +35,8 @@ body {
   margin: 0;
   color: var(--fg);
   font-family: var(--font-sans);
+  /* Only one cut is loaded: never fake bold/italic */
+  font-synthesis: none;
   -webkit-font-smoothing: antialiased;
 }
 
