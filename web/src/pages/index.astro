@@ -31,8 +31,8 @@ const s = await getSettings()
   </main>
 
   <footer>
-    <Credits />
     <Socials socials={s.socials} />
+    <Credits />
     {s.lyricsEnabled && <a href="/lyrics">Lyrics</a>}
   </footer>
 </Base>
