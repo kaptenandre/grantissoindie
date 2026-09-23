@@ -1,0 +1,27 @@
+---
+import {PortableText} from 'astro-portabletext'
+import type {PortableTextBlock} from '@portabletext/types'
+
+interface Props {
+  value: PortableTextBlock[]
+}
+---
+
+<div class="lyrics">
+  <PortableText value={Astro.props.value} />
+</div>
+
+<style>
+  .lyrics :global(p) {
+    margin: 0 0 1.5em;
+    white-space: pre-line;
+    line-height: 1.6;
+  }
+  .lyrics :global(h3) {
+    margin: 2em 0 0.5em;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+</style>

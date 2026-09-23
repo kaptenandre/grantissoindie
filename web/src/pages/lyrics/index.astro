@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro'
+import TopNav from '../../components/TopNav.astro'
+import {getSettings} from '../../lib/settings'
+import {sanityFetch} from '../../lib/sanity'
+import {releasesQuery} from '../../lib/queries'
+import type {Release} from '../../lib/types'
+
+const s = await getSettings()
+const releases = (await sanityFetch<Release[]>(releasesQuery, {}, [])).filter((r) => r.tracks?.some((t) => t.hasLyrics))
+---
+
+<Base title="Lyrics">
+  <TopNav artistName={s.artistName} links={s.navLinks} />
+  <main>
+    <h1>Lyrics</h1>
+    {releases.length === 0 && <p>Coming soon.</p>}
+    {
+      releases.map((r) => (
+        <section>
+          <h2>{r.title}</h2>
+          <ul>
+            {r.tracks!.filter((t) => t.hasLyrics).map((t) => (
+              <li>
+                <a href={`/lyrics/${t.slug}`}>{t.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 720px;
+    padding: var(--gutter);
+  }
+  h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  ul {
+    padding: 0;
+    list-style: none;
+    line-height: 2;
+  }
+</style>

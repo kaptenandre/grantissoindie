@@ -1,0 +1,141 @@
+---
+import type {SiteSettings} from '../lib/types'
+
+interface Props {
+  config: NonNullable<SiteSettings['newsletter']>
+}
+
+const {config} = Astro.props
+const status = Astro.url.searchParams.get('subscribed')
+const consentText =
+  config.consentText ||
+  'By signing up you agree to receive email and/or SMS updates. Unsubscribe at any time. Message & data rates may apply.'
+---
+
+<section class="newsletter" aria-labelledby="newsletter-title" data-success={config.successMessage}>
+  <h2 id="newsletter-title">{config.heading || 'Get updates'}</h2>
+  {config.body && <p>{config.body}</p>}
+
+  <form method="post" action="/api/subscribe" data-newsletter>
+    <input type="hidden" name="source" value="website" />
+    <!-- Honeypot -->
+    <label class="visually-hidden" aria-hidden="true">
+      Company <input type="text" name="company" tabindex="-1" autocomplete="off" />
+    </label>
+
+    <div class="fields">
+      <label>
+        <span class="visually-hidden">Email</span>
+        <input type="email" name="email" placeholder="Email" autocomplete="email" inputmode="email" />
+      </label>
+      {
+        config.collectPhone && (
+          <label>
+            <span class="visually-hidden">Phone</span>
+            <input type="tel" name="phone" placeholder="Phone (SMS)" autocomplete="tel" inputmode="tel" />
+          </label>
+        )
+      }
+      <button type="submit">Sign up</button>
+    </div>
+
+    <label class="consent">
+      <input type="checkbox" name="consent" required />
+      <span>
+        {consentText}
+        {config.privacyUrl && <a href={config.privacyUrl} target="_blank" rel="noopener">Privacy policy</a>}
+      </span>
+    </label>
+
+    <p class="status" role="status" aria-live="polite" data-status>
+      {status === '1' && (config.successMessage || 'Thanks!')}
+      {status === '0' && 'Something went wrong, please try again.'}
+    </p>
+  </form>
+</section>
+
+<script>
+  // Progressive enhancement: submit without a page reload when JS is available.
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-status]')!
+    const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!
+    const success = form.closest('section')?.dataset.success
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault()
+      button.disabled = true
+      status.textContent = ''
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: {Accept: 'application/json'},
+        })
+        const data = await res.json()
+        if (data.ok) {
+          form.reset()
+          status.textContent = success || 'Thanks!'
+        } else {
+          status.textContent = data.error || 'Something went wrong, please try again.'
+        }
+      } catch {
+        status.textContent = 'Something went wrong, please try again.'
+      } finally {
+        button.disabled = false
+      }
+    })
+  })
+</script>
+
+<style>
+  .newsletter {
+    max-width: 560px;
+  }
+  h2 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .fields label {
+    flex: 1 1 180px;
+  }
+  input[type='email'],
+  input[type='tel'] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+  }
+  button {
+    padding: 12px 20px;
+    border: 1px solid var(--fg);
+    background: var(--fg);
+    color: var(--bg);
+    font: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.5;
+  }
+  .consent {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .status {
+    min-height: 1.5em;
+    font-size: 0.875rem;
+  }
+</style>

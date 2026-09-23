@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro'
+import BackgroundVideo from '../components/BackgroundVideo.astro'
+import TopNav from '../components/TopNav.astro'
+import Socials from '../components/Socials.astro'
+import FeaturedRelease from '../components/FeaturedRelease.astro'
+import Newsletter from '../components/Newsletter.astro'
+import Shows from '../components/Shows.astro'
+import {getSettings} from '../lib/settings'
+
+const s = await getSettings()
+---
+
+<Base>
+  <BackgroundVideo video={s.backgroundVideo} />
+  <TopNav artistName={s.artistName} links={s.navLinks} />
+
+  <main>
+    <h1 class="visually-hidden">{s.artistName}</h1>
+    {s.tagline && <p class="tagline">{s.tagline}</p>}
+    {s.featuredRelease && <FeaturedRelease release={s.featuredRelease} />}
+    {
+      s.shows?.enabled && (
+        <Shows server:defer artist={s.shows.bandsintownArtist} emptyText={s.shows.emptyText}>
+          <p slot="fallback" />
+        </Shows>
+      )
+    }
+    {s.newsletter?.enabled !== false && <Newsletter config={s.newsletter ?? {}} />}
+  </main>
+
+  <footer>
+    <Socials socials={s.socials} />
+    <a href="/lyrics">Lyrics</a>
+  </footer>
+</Base>
+
+<style>
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 48px;
+    min-height: calc(100svh - 160px);
+    padding: var(--gutter);
+  }
+  .tagline {
+    margin: 0;
+    color: var(--muted);
+  }
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+    padding: var(--gutter);
+    font-size: 0.875rem;
+  }
+</style>

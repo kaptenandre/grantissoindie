@@ -1,0 +1,59 @@
+---
+import type {SiteSettings} from '../lib/types'
+import {imageUrl} from '../lib/sanity'
+
+interface Props {
+  video: SiteSettings['backgroundVideo']
+}
+
+const {video} = Astro.props
+const poster = imageUrl(video?.poster, 1920) ?? video?.posterUrl
+const hasVideo = Boolean(video?.mp4 || video?.webm)
+---
+
+<div class="bg" aria-hidden="true">
+  {
+    hasVideo ? (
+      <video class="bg-media" autoplay muted loop playsinline preload="metadata" poster={poster} data-bg-video data-mobile-src={video?.mobileMp4}>
+        {video?.webm && <source src={video.webm} type="video/webm" />}
+        {video?.mp4 && <source src={video.mp4} type="video/mp4" />}
+      </video>
+    ) : (
+      poster && <img class="bg-media" src={poster} alt="" fetchpriority="high" />
+    )
+  }
+  <div class="bg-overlay"></div>
+</div>
+
+<script>
+  // Respect reduced motion and data saver: keep the poster, skip playback.
+  const video = document.querySelector<HTMLVideoElement>('[data-bg-video]')
+  const saveData = (navigator as Navigator & {connection?: {saveData?: boolean}}).connection?.saveData
+  if (video && (matchMedia('(prefers-reduced-motion: reduce)').matches || saveData)) {
+    video.removeAttribute('autoplay')
+    video.pause()
+  } else if (video?.dataset.mobileSrc && matchMedia('(max-width: 700px) and (orientation: portrait)').matches) {
+    // <source media> isn't supported everywhere, so pick the portrait cut here
+    video.src = video.dataset.mobileSrc
+    video.play().catch(() => {})
+  }
+</script>
+
+<style>
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--bg);
+  }
+  .bg-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--overlay);
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+import type {GetStaticPaths} from 'astro'
+import Base from '../../layouts/Base.astro'
+import TopNav from '../../components/TopNav.astro'
+import PortableLyrics from '../../components/PortableLyrics.astro'
+import {getSettings} from '../../lib/settings'
+import {sanityFetch} from '../../lib/sanity'
+import {lyricSlugsQuery, songQuery} from '../../lib/queries'
+import type {Song} from '../../lib/types'
+
+export const getStaticPaths = (async () => {
+  const slugs = await sanityFetch<string[]>(lyricSlugsQuery, {}, [])
+  return slugs.map((slug) => ({params: {slug}}))
+}) satisfies GetStaticPaths
+
+const s = await getSettings()
+const song = await sanityFetch<Song | null>(songQuery, {slug: Astro.params.slug}, null)
+if (!song) return Astro.redirect('/404')
+---
+
+<Base title={song.title} description={`${song.title} lyrics by ${s.artistName}`}>
+  <TopNav artistName={s.artistName} links={s.navLinks} />
+  <main>
+    <a href="/lyrics" class="back">All lyrics</a>
+    <h1>{song.title}</h1>
+    {
+      song.release && (
+        <p class="meta">
+          {song.release.title}
+          {song.release.label && ` · ${song.release.label}`} · {song.release.releaseDate.slice(0, 4)}
+        </p>
+      )
+    }
+    {song.lyrics && <PortableLyrics value={song.lyrics} />}
+    {song.credits && <p class="credits">{song.credits}</p>}
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 720px;
+    padding: var(--gutter);
+  }
+  .back,
+  .meta,
+  .credits {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .credits {
+    white-space: pre-line;
+    margin-top: 3em;
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+import '../styles/global.css'
+import {getSettings} from '../lib/settings'
+import {imageUrl} from '../lib/sanity'
+
+interface Props {
+  title?: string
+  description?: string
+}
+
+const settings = await getSettings()
+const siteTitle = settings.seo?.title || settings.artistName
+const title = Astro.props.title ? `${Astro.props.title} | ${settings.artistName}` : siteTitle
+const description = Astro.props.description || settings.seo?.description || settings.tagline || ''
+const ogImage = imageUrl(settings.seo?.ogImage, 1200, 630)
+const canonical = new URL(Astro.url.pathname, Astro.site)
+---
+
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

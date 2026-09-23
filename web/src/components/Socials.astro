@@ -1,0 +1,58 @@
+---
+import type {SocialLink} from '../lib/types'
+
+interface Props {
+  socials?: SocialLink[]
+}
+
+const LABELS: Record<string, string> = {
+  instagram: 'Instagram',
+  tiktok: 'TikTok',
+  spotify: 'Spotify',
+  appleMusic: 'Apple Music',
+  youtube: 'YouTube',
+  soundcloud: 'SoundCloud',
+  bandcamp: 'Bandcamp',
+  tidal: 'Tidal',
+  deezer: 'Deezer',
+  facebook: 'Facebook',
+  x: 'X',
+  threads: 'Threads',
+  bandsintown: 'Bandsintown',
+  email: 'Email',
+}
+
+const {socials = []} = Astro.props
+---
+
+{
+  socials.length > 0 && (
+    <ul class="socials" aria-label="Socials">
+      {socials.map((s) => (
+        <li>
+          <a href={s.url} target={s.url.startsWith('mailto:') ? undefined : '_blank'} rel="me noopener">
+            {LABELS[s.platform] ?? s.platform}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+  }
+  a {
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+</style>

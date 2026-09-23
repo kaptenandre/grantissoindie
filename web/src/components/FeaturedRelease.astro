@@ -1,0 +1,77 @@
+---
+import type {Release} from '../lib/types'
+import {imageUrl} from '../lib/sanity'
+
+interface Props {
+  release: Release
+}
+
+const {release} = Astro.props
+const art = imageUrl(release.artwork, 800, 800)
+const isOut = new Date(release.releaseDate) <= new Date()
+const date = new Intl.DateTimeFormat('sv-SE', {dateStyle: 'long'}).format(new Date(release.releaseDate))
+---
+
+<section class="release" aria-labelledby="release-title">
+  {art && <img src={art} alt={`${release.title} artwork`} width="400" height="400" loading="lazy" />}
+  <div>
+    <p class="meta">
+      {release.type?.toUpperCase()}{release.label && ` · ${release.label}`} · {isOut ? date : `Out ${date}`}
+    </p>
+    <h2 id="release-title">{release.title}</h2>
+    {
+      release.smartLink && (
+        <a class="cta" href={release.smartLink} target="_blank" rel="noopener">
+          {isOut ? 'Listen' : 'Pre-save'}
+        </a>
+      )
+    }
+    {
+      release.tracks?.some((t) => t.hasLyrics) && (
+        <ul class="tracks">
+          {release.tracks.map((t) => (
+            <li>{t.hasLyrics ? <a href={`/lyrics/${t.slug}`}>{t.title}</a> : t.title}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .release {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 20px;
+  }
+  img {
+    width: min(240px, 50vw);
+    height: auto;
+  }
+  .meta {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  h2 {
+    margin: 4px 0 12px;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .cta {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 1px solid currentColor;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+  }
+  .tracks {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+  }
+</style>

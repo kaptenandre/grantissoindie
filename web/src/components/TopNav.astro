@@ -1,0 +1,70 @@
+---
+import type {Link} from '../lib/types'
+
+interface Props {
+  artistName: string
+  links?: Link[]
+}
+
+const {artistName, links = []} = Astro.props
+const isExternal = (url: string) => /^https?:\/\//.test(url)
+---
+
+<header class="top">
+  <a href="/" class="name">{artistName}</a>
+  {
+    links.length > 0 && (
+      <nav aria-label="Primary">
+        <ul>
+          {links.map((l) => (
+            <li>
+              <a
+                href={l.url}
+                class:list={{highlight: l.highlight}}
+                {...(isExternal(l.url) && {target: '_blank', rel: 'noopener'})}
+              >
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
+</header>
+
+<style>
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding: var(--gutter);
+  }
+  .name {
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  nav a {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+  }
+  nav a:hover,
+  nav a.highlight {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

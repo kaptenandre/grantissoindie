@@ -1,0 +1,76 @@
+---
+// Rendered as a server island (`server:defer`) so dates stay fresh without rebuilding the page.
+import {getUpcomingShows} from '../lib/bandsintown'
+
+interface Props {
+  artist?: string
+  emptyText?: string
+}
+
+const {artist, emptyText = 'No upcoming shows'} = Astro.props
+const shows = await getUpcomingShows(artist)
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400')
+
+const fmt = new Intl.DateTimeFormat('sv-SE', {day: 'numeric', month: 'short', year: 'numeric'})
+---
+
+{
+  shows !== null && (
+    <section class="shows" aria-labelledby="shows-title">
+      <h2 id="shows-title">Shows</h2>
+      {shows.length === 0 ? (
+        <p>{emptyText}</p>
+      ) : (
+        <ol>
+          {shows.map((s) => {
+            const ticket = s.offers.find((o) => o.type === 'Tickets')?.url ?? s.url
+            return (
+              <li>
+                <time datetime={s.datetime}>{fmt.format(new Date(s.datetime))}</time>
+                <span>
+                  {s.venue.city}, {s.venue.country}
+                </span>
+                <span>{s.venue.name}</span>
+                {s.soldOut ? (
+                  <span>Sold out</span>
+                ) : (
+                  <a href={ticket} target="_blank" rel="noopener">
+                    Tickets
+                  </a>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+      )}
+    </section>
+  )
+}
+
+<style>
+  h2 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 7rem 1fr 1fr auto;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid rgb(255 255 255 / 0.2);
+    font-size: 0.875rem;
+  }
+  @media (max-width: 600px) {
+    li {
+      grid-template-columns: 1fr auto;
+    }
+  }
+</style>
