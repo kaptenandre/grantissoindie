@@ -7,6 +7,7 @@ import {releasesQuery} from '../../lib/queries'
 import type {Release} from '../../lib/types'
 
 const s = await getSettings()
+if (!s.lyricsEnabled) return Astro.redirect('/')
 const releases = (await sanityFetch<Release[]>(releasesQuery, {}, [])).filter((r) => r.tracks?.some((t) => t.hasLyrics))
 ---
 

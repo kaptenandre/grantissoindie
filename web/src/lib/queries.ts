@@ -18,6 +18,7 @@ export const settingsQuery = /* groq */ `
 *[_id == "siteSettings"][0]{
   artistName,
   tagline,
+  lyricsEnabled,
   "backgroundVideo": backgroundVideo{
     "mp4": coalesce(mp4.asset->url, externalUrl),
     "webm": webm.asset->url,

@@ -15,10 +15,11 @@ Design is intentionally bare: structure, data and integrations first. All visual
 - **Top links**: `navLinks` in Site settings (Stream, Pre-save, Merch, Tour...).
 - **Socials**: Instagram, TikTok, Facebook and more, editable in Sanity.
 - **Newsletter with SMS**: `POST /api/subscribe` with email and/or phone, explicit consent, honeypot, phone normalised to E.164 (`070...` -> `+4670...`). Works without JS, enhanced with fetch when JS is available. Provider chosen by `NEWSLETTER_PROVIDER`:
-  - `klaviyo`: email + SMS consent in one list (recommended)
+  - `mailchimp`: in use. Email required, phone optional; SMS consent is saved on the same contact (the audience needs SMS marketing with a Branded Sender ID for Sweden)
+  - `klaviyo`: email + SMS consent in one list
   - `webhook`: JSON POST to any URL (Zapier/Make into Laylo, Mailchimp, a sheet...)
   - `log`: dev only
-- **Lyrics**: `song` documents with Portable Text lyrics; `/lyrics` and `/lyrics/[slug]`. `showLyrics` hides them until release day.
+- **Lyrics**: `song` documents with Portable Text lyrics; `/lyrics` and `/lyrics/[slug]`. Off until **Show lyrics** is ticked in Site settings; per song, `showLyrics` hides it until release day.
 - **Releases**: label defaults to Skolhaus, smart link / pre-save, per-service links, tracklist.
 - **Bandsintown** (ready, off by default): enable in Site settings > Shows and set `BANDSINTOWN_APP_ID`. Rendered as an Astro server island, cached for an hour at the edge, so tour dates stay fresh without rebuilds.
 

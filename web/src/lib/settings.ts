@@ -5,6 +5,7 @@ import type {SiteSettings} from './types'
 /** Used until the matching content exists in Sanity. */
 const defaults: SiteSettings = {
   artistName: 'GRANT',
+  lyricsEnabled: false,
   backgroundVideo: {
     mp4: '/video/bg-1080.mp4',
     webm: '/video/bg-1080.webm',
@@ -16,6 +17,7 @@ const defaults: SiteSettings = {
     {platform: 'instagram', url: 'https://www.instagram.com/grantissondie/'},
     {platform: 'tiktok', url: 'https://www.tiktok.com/@grantissoindie'},
     {platform: 'facebook', url: 'https://www.facebook.com/grantissoindie'},
+    {platform: 'bandcamp', url: 'https://bandcamp.com/grantissoindie'},
   ],
   newsletter: {enabled: true, heading: 'Get updates', collectPhone: true},
 }

@@ -22,6 +22,14 @@ export const siteSettings = defineType({
       group: 'general',
       description: 'Shown on the front page. Falls back to the latest release.',
     }),
+    defineField({
+      name: 'lyricsEnabled',
+      title: 'Show lyrics',
+      type: 'boolean',
+      group: 'general',
+      initialValue: false,
+      description: 'Turns on /lyrics, the footer link and track links',
+    }),
     defineField({name: 'backgroundVideo', type: 'backgroundVideo', group: 'hero'}),
     defineField({
       name: 'navLinks',

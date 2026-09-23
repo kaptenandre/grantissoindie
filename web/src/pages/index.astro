@@ -18,7 +18,7 @@ const s = await getSettings()
   <main>
     <h1 class="visually-hidden">{s.artistName}</h1>
     {s.tagline && <p class="tagline">{s.tagline}</p>}
-    {s.featuredRelease && <FeaturedRelease release={s.featuredRelease} />}
+    {s.featuredRelease && <FeaturedRelease release={s.featuredRelease} showLyrics={s.lyricsEnabled} />}
     {
       s.shows?.enabled && (
         <Shows server:defer artist={s.shows.bandsintownArtist} emptyText={s.shows.emptyText}>
@@ -31,7 +31,7 @@ const s = await getSettings()
 
   <footer>
     <Socials socials={s.socials} />
-    <a href="/lyrics">Lyrics</a>
+    {s.lyricsEnabled && <a href="/lyrics">Lyrics</a>}
   </footer>
 </Base>
 

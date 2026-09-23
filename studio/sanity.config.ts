@@ -4,12 +4,12 @@ import {visionTool} from '@sanity/vision'
 import {schemaTypes, singletonTypes} from './schemaTypes'
 import {structure} from './structure'
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'REPLACE_ME'
+const projectId = process.env.SANITY_STUDIO_PROJECT_ID || '0qb7s66h'
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
 
 export default defineConfig({
   name: 'default',
-  title: 'Artist site',
+  title: 'GRANT',
   projectId,
   dataset,
   plugins: [structureTool({structure}), visionTool()],

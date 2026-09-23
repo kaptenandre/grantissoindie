@@ -9,6 +9,7 @@ import {lyricSlugsQuery, songQuery} from '../../lib/queries'
 import type {Song} from '../../lib/types'
 
 export const getStaticPaths = (async () => {
+  if (!(await getSettings()).lyricsEnabled) return []
   const slugs = await sanityFetch<string[]>(lyricSlugsQuery, {}, [])
   return slugs.map((slug) => ({params: {slug}}))
 }) satisfies GetStaticPaths

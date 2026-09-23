@@ -4,9 +4,10 @@ import {imageUrl} from '../lib/sanity'
 
 interface Props {
   release: Release
+  showLyrics?: boolean
 }
 
-const {release} = Astro.props
+const {release, showLyrics = false} = Astro.props
 const art = imageUrl(release.artwork, 800, 800)
 const isOut = new Date(release.releaseDate) <= new Date()
 const date = new Intl.DateTimeFormat('sv-SE', {dateStyle: 'long'}).format(new Date(release.releaseDate))
@@ -27,7 +28,7 @@ const date = new Intl.DateTimeFormat('sv-SE', {dateStyle: 'long'}).format(new Da
       )
     }
     {
-      release.tracks?.some((t) => t.hasLyrics) && (
+      showLyrics && release.tracks?.some((t) => t.hasLyrics) && (
         <ul class="tracks">
           {release.tracks.map((t) => (
             <li>{t.hasLyrics ? <a href={`/lyrics/${t.slug}`}>{t.title}</a> : t.title}</li>

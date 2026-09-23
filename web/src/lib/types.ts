@@ -35,6 +35,7 @@ export type Song = {
 export type SiteSettings = {
   artistName: string
   tagline?: string
+  lyricsEnabled?: boolean
   backgroundVideo?: {
     mp4?: string
     webm?: string
