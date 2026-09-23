@@ -38,13 +38,19 @@ const s = await getSettings()
 </Base>
 
 <style>
+  /* One screen: header top, footer pinned to the bottom, content fills the space between */
+  :global(body) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+  }
   main {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     gap: 48px;
-    min-height: calc(100svh - 160px);
-    padding: var(--gutter);
+    padding: 0 var(--gutter);
   }
   .tagline {
     margin: 0;
