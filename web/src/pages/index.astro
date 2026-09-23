@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro'
 import BackgroundVideo from '../components/BackgroundVideo.astro'
 import TopNav from '../components/TopNav.astro'
 import Socials from '../components/Socials.astro'
+import Credits from '../components/Credits.astro'
 import FeaturedRelease from '../components/FeaturedRelease.astro'
 import Newsletter from '../components/Newsletter.astro'
 import Shows from '../components/Shows.astro'
@@ -30,6 +31,7 @@ const s = await getSettings()
   </main>
 
   <footer>
+    <Credits />
     <Socials socials={s.socials} />
     {s.lyricsEnabled && <a href="/lyrics">Lyrics</a>}
   </footer>
