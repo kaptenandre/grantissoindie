@@ -15,10 +15,10 @@ const description =
   Astro.props.description ||
   settings.seo?.description ||
   settings.tagline ||
-  `Official site of ${settings.artistName}. New music, videos and news. Out on Skolhaus.`
+  `${settings.artistName} ${new Date().getFullYear()}®`
 const canonical = new URL(Astro.url.pathname, Astro.site)
 // Sanity OG image if set, otherwise the generated one in /public
-const ogImage = imageUrl(settings.seo?.ogImage, 1200, 630) ?? new URL('/og.jpg', Astro.site).href
+const ogImage = imageUrl(settings.seo?.ogImage, 1200, 630) ?? new URL('/og.jpg?v=2', Astro.site).href
 
 const jsonLd = {
   '@context': 'https://schema.org',
