@@ -124,6 +124,24 @@ const consentText =
     letter-spacing: 0.06em;
     cursor: pointer;
   }
+  input::placeholder {
+    color: #fff;
+    opacity: 1;
+  }
+  .consent input {
+    appearance: none;
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin: 1px 0 0;
+    border: 1px solid #fff;
+    background: transparent;
+    cursor: pointer;
+  }
+  .consent input:checked {
+    background: #fff;
+    box-shadow: inset 0 0 0 2px #000;
+  }
   button:disabled {
     opacity: 0.5;
   }
@@ -132,7 +150,7 @@ const consentText =
     gap: 8px;
     margin-top: 12px;
     font-size: 0.75rem;
-    color: var(--muted);
+    color: #fff;
   }
   .status {
     min-height: 1.5em;

@@ -3,7 +3,7 @@ import {defineConfig, envField} from 'astro/config'
 import netlify from '@astrojs/netlify'
 
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://example.com',
+  site: process.env.SITE_URL || 'https://grantissoindie.com',
   // Pages are prerendered; API routes and server islands opt out with `prerender = false` / `server:defer`
   adapter: netlify(),
   env: {

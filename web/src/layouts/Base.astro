@@ -11,27 +11,50 @@ interface Props {
 const settings = await getSettings()
 const siteTitle = settings.seo?.title || settings.artistName
 const title = Astro.props.title ? `${Astro.props.title} | ${settings.artistName}` : siteTitle
-const description = Astro.props.description || settings.seo?.description || settings.tagline || ''
-const ogImage = imageUrl(settings.seo?.ogImage, 1200, 630)
+const description =
+  Astro.props.description ||
+  settings.seo?.description ||
+  settings.tagline ||
+  `Official site of ${settings.artistName}. New music, videos and news. Out on Skolhaus.`
 const canonical = new URL(Astro.url.pathname, Astro.site)
+// Sanity OG image if set, otherwise the generated one in /public
+const ogImage = imageUrl(settings.seo?.ogImage, 1200, 630) ?? new URL('/og.jpg', Astro.site).href
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'MusicGroup',
+  name: settings.artistName,
+  url: Astro.site?.href,
+  image: ogImage,
+  sameAs: settings.socials?.map((s) => s.url).filter((u) => u.startsWith('http')),
+}
 ---
 
 <!doctype html>
-<html lang="sv">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+    <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={settings.artistName} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
-    {description && <meta property="og:description" content={description} />}
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={settings.artistName} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <meta name="theme-color" content="#000000" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preload" href="/fonts/authentic-sans-condensed-60.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/authentic-sans-condensed-90.woff2" as="font" type="font/woff2" crossorigin />
     <slot name="head" />
   </head>
   <body>
