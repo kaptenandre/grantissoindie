@@ -22,7 +22,7 @@ export default defineConfig({
       MAILCHIMP_API_KEY: envField.string({context: 'server', access: 'secret', optional: true}),
       MAILCHIMP_AUDIENCE_ID: envField.string({context: 'server', access: 'secret', optional: true}),
       MAILCHIMP_DOUBLE_OPT_IN: envField.boolean({context: 'server', access: 'secret', default: false}),
-      MAILCHIMP_TAGS: envField.string({context: 'server', access: 'secret', default: 'website'}),
+      MAILCHIMP_TAGS: envField.string({context: 'server', access: 'secret', default: 'Grant'}),
       KLAVIYO_PRIVATE_KEY: envField.string({context: 'server', access: 'secret', optional: true}),
       KLAVIYO_LIST_ID: envField.string({context: 'server', access: 'secret', optional: true}),
       NEWSLETTER_WEBHOOK_URL: envField.string({context: 'server', access: 'secret', optional: true}),

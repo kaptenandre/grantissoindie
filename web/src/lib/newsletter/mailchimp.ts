@@ -1,6 +1,8 @@
 import {createHash} from 'node:crypto'
 import {SubscribeError, type NewsletterProvider, type Subscriber} from './types'
 
+const SMS_TAG = 'SMS opt-in'
+
 type Options = {
   apiKey: string
   audienceId: string
@@ -11,8 +13,9 @@ type Options = {
 
 /**
  * Mailchimp Marketing API. Contacts are keyed by email, so email is required.
- * SMS consent is stored on the same contact; the audience must have SMS marketing set up
- * (Sweden needs a Branded Sender ID). If the audience rejects SMS fields we still save the email.
+ * SMS consent is stored on the same contact, but Mailchimp silently ignores the SMS fields until
+ * SMS marketing is set up on the audience (Sweden needs a Branded Sender ID). So the number is also
+ * saved in the PHONE merge field and the contact tagged SMS_TAG, ready to import once SMS is live.
  */
 export function mailchimp({apiKey, audienceId, doubleOptIn, tags}: Options): NewsletterProvider {
   const dc = apiKey.split('-').pop()
@@ -34,7 +37,12 @@ export function mailchimp({apiKey, audienceId, doubleOptIn, tags}: Options): New
       if (!email) throw new SubscribeError('Add your email address')
 
       const status = doubleOptIn ? 'pending' : 'subscribed'
-      const body: Record<string, unknown> = {email_address: email, status_if_new: status, status}
+      const body: Record<string, unknown> = {
+        email_address: email,
+        status_if_new: status,
+        status,
+        ...(phone && {merge_fields: {PHONE: phone}}),
+      }
       const sms = phone ? {sms_phone_number: phone, sms_subscription_status: 'subscribed'} : {}
 
       let res = await upsert(email, {...body, ...sms})
@@ -51,7 +59,7 @@ export function mailchimp({apiKey, audienceId, doubleOptIn, tags}: Options): New
         throw new Error(`Mailchimp ${res.status}: ${text}`)
       }
 
-      const tagList = [...tags, source].filter(Boolean)
+      const tagList = [...tags, source, phone && SMS_TAG].filter((t): t is string => Boolean(t))
       if (tagList.length) {
         const hash = createHash('md5').update(email).digest('hex')
         await fetch(`${base}/${hash}/tags`, {

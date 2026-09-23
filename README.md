@@ -15,7 +15,7 @@ Design is intentionally bare: structure, data and integrations first. All visual
 - **Top links**: `navLinks` in Site settings (Stream, Pre-save, Merch, Tour...).
 - **Socials**: Instagram, TikTok, Facebook and more, editable in Sanity.
 - **Newsletter with SMS**: `POST /api/subscribe` with email and/or phone, explicit consent, honeypot, phone normalised to E.164 (`070...` -> `+4670...`). Works without JS, enhanced with fetch when JS is available. Provider chosen by `NEWSLETTER_PROVIDER`:
-  - `mailchimp`: in use. Email required, phone optional; SMS consent is saved on the same contact (the audience needs SMS marketing with a Branded Sender ID for Sweden)
+  - `mailchimp`: in use. audience "Skolhaus", tagged `Grant` (+ `website`, + `SMS opt-in` when a phone is given). Email required, phone optional. The number goes to the PHONE merge field and SMS consent; Mailchimp ignores the SMS consent until SMS marketing is set up on the audience (Sweden needs a Branded Sender ID)
   - `klaviyo`: email + SMS consent in one list
   - `webhook`: JSON POST to any URL (Zapier/Make into Laylo, Mailchimp, a sheet...)
   - `log`: dev only
