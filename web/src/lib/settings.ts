@@ -17,6 +17,7 @@ const defaults: SiteSettings = {
     {platform: 'instagram', url: 'https://www.instagram.com/grantissondie/'},
     {platform: 'tiktok', url: 'https://www.tiktok.com/@grantissoindie'},
     {platform: 'facebook', url: 'https://www.facebook.com/grantissoindie'},
+    {platform: 'youtube', url: 'https://www.youtube.com/@grantofficial'},
     {platform: 'bandcamp', url: 'https://bandcamp.com/grantissoindie'},
   ],
   newsletter: {enabled: true, heading: 'Get updates', collectPhone: true},
