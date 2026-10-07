@@ -10,27 +10,53 @@ interface Props {
 const {release, showLyrics = false} = Astro.props
 // Typographic apostrophes: "C'mon" -> "C’mon"
 const title = release.title.replace(/'/g, '’')
-// Release dates are whole days: out from the start of the release date
-const isOut = release.releaseDate <= new Date().toISOString().slice(0, 10)
+const TZ = 'Europe/Stockholm'
+
+/** Midnight (Stockholm time) after a YYYY-MM-DD date */
+const midnightAfter = (ymd: string) => {
+  const next = new Date(`${ymd}T12:00:00Z`)
+  next.setUTCDate(next.getUTCDate() + 1)
+  const day = next.toISOString().slice(0, 10)
+  const offset =
+    new Intl.DateTimeFormat('en', {timeZone: TZ, timeZoneName: 'longOffset'})
+      .formatToParts(new Date(`${day}T00:00:00Z`))
+      .find((p) => p.type === 'timeZoneName')
+      ?.value.replace('GMT', '') || '+00:00'
+  return new Date(`${day}T00:00:00${offset}`)
+}
+
+// Pre-save until it goes live: the exact release time if set, otherwise midnight after the release date.
+// This is the build-time state; the script below re-checks in the browser so the page flips by itself.
+const outAt = release.releaseAt ? new Date(release.releaseAt) : midnightAfter(release.releaseDate)
+const isOut = Date.now() >= outAt.getTime()
+const today = new Intl.DateTimeFormat('en-CA', {timeZone: TZ}).format(new Date())
 const date = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long'}).format(new Date(release.releaseDate))
+const upcoming = release.releaseDate === today ? 'Out today' : `Out ${date}`
 const type = release.type === 'ep' ? 'EP' : release.type === 'album' ? 'Album' : 'Single'
 const links = release.streamingLinks?.filter((l) => l.url) ?? []
 const external = {target: '_blank', rel: 'noopener'}
 ---
 
-<section class="release" aria-labelledby="release-title">
+<section
+  class="release"
+  aria-labelledby="release-title"
+  data-release
+  data-out-at={outAt.toISOString()}
+  data-release-date={release.releaseDate}
+  data-upcoming-label={`Out ${date}`}
+>
   <div class="title-box" data-fit-box>
     <h2 id="release-title" class="title" data-fit>{title}</h2>
   </div>
 
   <div class="details">
-    <p class="meta">{type} · {isOut ? 'Out now' : `Out ${date}`}</p>
+    <p class="meta">{type} · <span data-status>{isOut ? 'Out now' : upcoming}</span></p>
     {
       (links.length > 0 || release.smartLink) && (
         <ul class="stream" aria-label={`Listen to ${release.title}`}>
           {release.smartLink && (
             <li>
-              <a class="primary" href={release.smartLink} {...external}>
+              <a class="primary" href={release.smartLink} {...external} data-cta>
                 {isOut ? 'Listen' : 'Pre-save'}
               </a>
             </li>
@@ -73,6 +99,22 @@ const external = {target: '_blank', rel: 'noopener'}
     title.style.fontSize = `${lo}px`
     title.dataset.fitted = ''
   }
+
+  // Pre-save -> Listen when the release goes live, also in a tab that is already open
+  document.querySelectorAll<HTMLElement>('[data-release]').forEach((section) => {
+    const outAt = Date.parse(section.dataset.outAt!)
+    const status = section.querySelector('[data-status]')
+    const cta = section.querySelector('[data-cta]')
+    const update = () => {
+      const out = Date.now() >= outAt
+      const today = new Intl.DateTimeFormat('en-CA', {timeZone: 'Europe/Stockholm'}).format(new Date())
+      if (status) status.textContent = out ? 'Out now' : section.dataset.releaseDate === today ? 'Out today' : section.dataset.upcomingLabel!
+      if (cta) cta.textContent = out ? 'Listen' : 'Pre-save'
+      return out
+    }
+    const wait = outAt - Date.now()
+    if (!update() && wait < 2 ** 31 - 1) setTimeout(update, wait + 500)
+  })
 
   const titles = [...document.querySelectorAll<HTMLElement>('[data-fit]')]
   const fitAll = () => titles.forEach(fit)

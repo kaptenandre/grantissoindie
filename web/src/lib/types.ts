@@ -17,6 +17,8 @@ export type Release = {
   slug: string
   type?: 'single' | 'ep' | 'album'
   releaseDate: string
+  /** ISO datetime it goes live; optional */
+  releaseAt?: string
   label?: string
   artwork?: SanityImage
   smartLink?: string

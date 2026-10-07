@@ -3,6 +3,7 @@ const releaseFields = /* groq */ `
   "slug": slug.current,
   type,
   releaseDate,
+  releaseAt,
   label,
   artwork,
   smartLink,

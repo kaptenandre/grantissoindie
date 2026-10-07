@@ -19,6 +19,13 @@ export const release = defineType({
       initialValue: 'single',
     }),
     defineField({name: 'releaseDate', type: 'date', validation: (r) => r.required()}),
+    defineField({
+      name: 'releaseAt',
+      title: 'Release time (optional)',
+      type: 'datetime',
+      description:
+        'Exact time it goes live. The site shows "Pre-save" until then and switches to "Listen" by itself. Empty = midnight after the release date.',
+    }),
     defineField({name: 'label', type: 'string', initialValue: 'Skolhaus'}),
     defineField({name: 'artwork', type: 'image', options: {hotspot: true}}),
     defineField({
