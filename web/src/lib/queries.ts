@@ -8,6 +8,7 @@ const releaseFields = /* groq */ `
   label,
   artwork,
   smartLink,
+  videoUrl,
   streamingLinks,
   "tracks": tracks[]->{
     title,

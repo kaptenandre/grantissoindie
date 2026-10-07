@@ -42,6 +42,12 @@ export const release = defineType({
       description: 'Feature.fm, Linkfire, Toneden, DistroKid Hyperfollow...',
     }),
     defineField({
+      name: 'videoUrl',
+      title: 'Video',
+      type: 'url',
+      description: 'Music video (YouTube). Shown as a "Watch video" button next to Listen.',
+    }),
+    defineField({
       name: 'streamingLinks',
       type: 'array',
       of: [{type: 'socialLink'}],

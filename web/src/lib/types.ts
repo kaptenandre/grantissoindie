@@ -23,6 +23,7 @@ export type Release = {
   label?: string
   artwork?: SanityImage
   smartLink?: string
+  videoUrl?: string
   streamingLinks?: SocialLink[]
   tracks?: SongSummary[]
 }

@@ -81,12 +81,13 @@ const s = await getSettings()
   @media (max-width: 600px) {
     footer {
       flex-wrap: nowrap;
-      gap: 12px;
-      font-size: 0.8125rem;
+      gap: clamp(8px, 2.8vw, 12px);
+      font-size: clamp(0.625rem, 3.25vw, 0.8125rem);
     }
     footer :global(.socials) {
+      font-size: inherit;
       flex-wrap: nowrap;
-      gap: 12px;
+      gap: clamp(8px, 2.8vw, 12px);
     }
   }
 </style>

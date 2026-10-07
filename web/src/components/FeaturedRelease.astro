@@ -50,14 +50,25 @@ const external = {target: '_blank', rel: 'noopener'}
   </div>
 
   <div class="details">
-    <p class="meta">{type} · <span data-status>{isOut ? 'Out now' : upcoming}</span></p>
+    <p class="meta">
+      <span data-kind data-base={type}>{isOut ? `New ${type.toLowerCase()}` : type}</span> · <span data-status
+        >{isOut ? 'Out now' : upcoming}</span
+      >
+    </p>
     {
-      (links.length > 0 || release.smartLink) && (
+      (links.length > 0 || release.smartLink || release.videoUrl) && (
         <ul class="stream" aria-label={`Listen to ${release.title}`}>
           {release.smartLink && (
             <li>
               <a class="primary" href={release.smartLink} {...external} data-cta>
                 {isOut ? 'Listen' : 'Pre-save'}
+              </a>
+            </li>
+          )}
+          {release.videoUrl && (
+            <li>
+              <a class="video" href={release.videoUrl} {...external}>
+                Watch video
               </a>
             </li>
           )}
@@ -104,10 +115,12 @@ const external = {target: '_blank', rel: 'noopener'}
   document.querySelectorAll<HTMLElement>('[data-release]').forEach((section) => {
     const outAt = Date.parse(section.dataset.outAt!)
     const status = section.querySelector('[data-status]')
+    const kind = section.querySelector<HTMLElement>('[data-kind]')
     const cta = section.querySelector('[data-cta]')
     const update = () => {
       const out = Date.now() >= outAt
       const today = new Intl.DateTimeFormat('en-CA', {timeZone: 'Europe/Stockholm'}).format(new Date())
+      if (kind) kind.textContent = out ? `New ${kind.dataset.base!.toLowerCase()}` : kind.dataset.base!
       if (status) status.textContent = out ? 'Out now' : section.dataset.releaseDate === today ? 'Out today' : section.dataset.upcomingLabel!
       if (cta) cta.textContent = out ? 'Listen' : 'Pre-save'
       return out
@@ -234,12 +247,25 @@ const external = {target: '_blank', rel: 'noopener'}
       flex-basis: 100%;
       margin-bottom: 2px;
     }
+    /* With a video: Listen and Watch video share the first row */
+    .stream:has(.video) li:has(.primary),
+    .stream li:has(.video) {
+      flex: 0 0 calc(50% - 4px);
+      margin-bottom: 2px;
+    }
+    .stream:has(.video) {
+      column-gap: 8px;
+    }
+    .stream:has(.video) li:not(:has(.primary, .video)) {
+      margin-right: 10px;
+    }
+    .stream a.video,
     .stream a.primary {
       display: block;
       padding: calc(14px - var(--optical-shift)) 12px calc(14px + var(--optical-shift));
       text-align: center;
     }
-    .stream a:not(.primary) {
+    .stream a:not(.primary, .video) {
       padding: 10px 0;
       border: 0;
       background: none;
