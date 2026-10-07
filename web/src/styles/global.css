@@ -26,6 +26,14 @@
   --overlay: rgb(0 0 0 / 0.35);
   --font-sans: 'AUTHENTIC Sans Condensed', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
   --gutter: clamp(16px, 4vw, 40px);
+  /* AUTHENTIC Sans has no kerning table, so wide tracking makes uneven pairs (ET, TO) obvious.
+     Keep uppercase labels tight and pull word spaces in a little. */
+  --caps-tracking: 0.025em;
+  --caps-word-spacing: -0.06em;
+  /* Its cap height (752) almost reaches the ascent (776), so caps sit ~0.1em above the middle of
+     the line box. Used as top/bottom padding adjustment in fields and buttons: a negative value
+     moves the text down so it looks centred. */
+  --optical-shift: -0.12em;
   color-scheme: dark;
 }
 

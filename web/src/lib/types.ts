@@ -14,6 +14,7 @@ export type SongSummary = {title: string; slug: string; hasLyrics: boolean}
 
 export type Release = {
   title: string
+  titleUppercase?: boolean
   slug: string
   type?: 'single' | 'ep' | 'album'
   releaseDate: string

@@ -41,7 +41,8 @@ const releases = (await sanityFetch<Release[]>(releasesQuery, {}, [])).filter((r
   h2 {
     font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
     color: var(--muted);
   }
   ul {

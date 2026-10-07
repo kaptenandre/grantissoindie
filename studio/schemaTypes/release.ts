@@ -7,6 +7,13 @@ export const release = defineType({
   fields: [
     defineField({name: 'title', type: 'string', validation: (r) => r.required()}),
     defineField({
+      name: 'titleUppercase',
+      title: 'Title in capitals',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Show the big title in capitals on the site. Preview without saving: add ?caps to the site URL.',
+    }),
+    defineField({
       name: 'slug',
       type: 'slug',
       options: {source: 'title', maxLength: 96},

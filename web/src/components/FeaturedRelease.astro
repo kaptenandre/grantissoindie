@@ -46,7 +46,7 @@ const external = {target: '_blank', rel: 'noopener'}
   data-upcoming-label={`Out ${date}`}
 >
   <div class="title-box" data-fit-box>
-    <h2 id="release-title" class="title" data-fit>{title}</h2>
+    <h2 id="release-title" class:list={['title', {caps: release.titleUppercase}]} data-fit>{title}</h2>
   </div>
 
   <div class="details">
@@ -117,6 +117,10 @@ const external = {target: '_blank', rel: 'noopener'}
   })
 
   const titles = [...document.querySelectorAll<HTMLElement>('[data-fit]')]
+
+  // Design preview: ?caps / ?caps=0 forces capitals on or off without touching Sanity
+  const caps = new URLSearchParams(location.search).get('caps')
+  if (caps !== null) titles.forEach((t) => t.classList.toggle('caps', caps !== '0'))
   const fitAll = () => titles.forEach(fit)
 
   // Measure with the real font, then keep fitting as the viewport changes
@@ -156,6 +160,12 @@ const external = {target: '_blank', rel: 'noopener'}
     overflow-wrap: normal;
     hyphens: manual;
   }
+  .title.caps {
+    text-transform: uppercase;
+    /* Capitals need a little more air than lowercase */
+    letter-spacing: 0.01em;
+    line-height: 0.92;
+  }
 
   .details {
     display: flex;
@@ -167,7 +177,8 @@ const external = {target: '_blank', rel: 'noopener'}
   .meta {
     margin: 0;
     font-size: 0.875rem;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
     text-transform: uppercase;
   }
   .stream {
@@ -180,13 +191,14 @@ const external = {target: '_blank', rel: 'noopener'}
   }
   .stream a {
     display: inline-block;
-    padding: 10px 14px;
+    padding: calc(10px - var(--optical-shift)) 14px calc(10px + var(--optical-shift));
     border: 1px solid #fff;
     color: #fff;
     text-decoration: none;
     text-transform: uppercase;
     font-size: 0.8125rem;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
     line-height: 1;
   }
   .stream a.primary,
@@ -224,7 +236,7 @@ const external = {target: '_blank', rel: 'noopener'}
     }
     .stream a.primary {
       display: block;
-      padding: 14px 12px;
+      padding: calc(14px - var(--optical-shift)) 12px calc(14px + var(--optical-shift));
       text-align: center;
     }
     .stream a:not(.primary) {

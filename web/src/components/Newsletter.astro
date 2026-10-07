@@ -95,7 +95,8 @@ const consentText =
     margin: 0 0 8px;
     font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
   }
   .fields {
     display: flex;
@@ -108,20 +109,21 @@ const consentText =
   input[type='email'],
   input[type='tel'] {
     width: 100%;
-    padding: 12px;
+    padding: calc(12px - var(--optical-shift)) 12px calc(12px + var(--optical-shift));
     border: 1px solid currentColor;
     background: transparent;
     color: inherit;
     font: inherit;
   }
   button {
-    padding: 12px 20px;
+    padding: calc(12px - var(--optical-shift)) 20px calc(12px + var(--optical-shift));
     border: 1px solid var(--fg);
     background: var(--fg);
     color: var(--bg);
     font: inherit;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
     cursor: pointer;
   }
   input::placeholder {

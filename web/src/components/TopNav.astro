@@ -46,7 +46,8 @@ const isExternal = (url: string) => /^https?:\/\//.test(url)
     font-weight: 700;
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
   }
   ul {
     display: flex;
@@ -60,7 +61,8 @@ const isExternal = (url: string) => /^https?:\/\//.test(url)
     text-decoration: none;
     text-transform: uppercase;
     font-size: 0.875rem;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
   }
   nav a:hover,
   nav a.highlight {

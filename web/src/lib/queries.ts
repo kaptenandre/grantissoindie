@@ -1,5 +1,6 @@
 const releaseFields = /* groq */ `
   title,
+  titleUppercase,
   "slug": slug.current,
   type,
   releaseDate,
