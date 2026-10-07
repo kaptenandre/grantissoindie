@@ -158,4 +158,19 @@ const consentText =
     min-height: 1.5em;
     font-size: 0.875rem;
   }
+
+  /* Phones: email and phone side by side, Sign up on its own row underneath */
+  @media (max-width: 600px) {
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .fields label {
+      min-width: 0;
+    }
+    .fields button {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
 </style>

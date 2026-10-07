@@ -77,4 +77,16 @@ const s = await getSettings()
     padding: var(--gutter);
     font-size: 0.875rem;
   }
+  /* Phones: socials and marks on a single row */
+  @media (max-width: 600px) {
+    footer {
+      flex-wrap: nowrap;
+      gap: 12px;
+      font-size: 0.8125rem;
+    }
+    footer :global(.socials) {
+      flex-wrap: nowrap;
+      gap: 12px;
+    }
+  }
 </style>

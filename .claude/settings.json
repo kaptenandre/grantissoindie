@@ -1,5 +1,5 @@
 {
   "permissions": {
-    "allow": ["mcp__Sanity"]
+    "allow": ["mcp__Sanity", "mcp__Sanity__*", "mcp__Netlify", "mcp__Netlify__*"]
   }
 }
