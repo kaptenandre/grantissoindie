@@ -6,6 +6,8 @@ export const SOCIAL_PLATFORMS = [
   {title: 'Spotify', value: 'spotify'},
   {title: 'Apple Music', value: 'appleMusic'},
   {title: 'YouTube', value: 'youtube'},
+  {title: 'YouTube Music', value: 'youtubeMusic'},
+  {title: 'Amazon Music', value: 'amazonMusic'},
   {title: 'SoundCloud', value: 'soundcloud'},
   {title: 'Bandcamp', value: 'bandcamp'},
   {title: 'Tidal', value: 'tidal'},

@@ -9,6 +9,15 @@
   font-display: swap;
 }
 
+/* WT Kormelink (WiseType, web license) for release titles */
+@font-face {
+  font-family: 'WT Kormelink';
+  src: url('/fonts/wt-kormelink-roman.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --fg: #fff;
   --bg: #000;

@@ -1,25 +1,9 @@
 ---
 import type {SocialLink} from '../lib/types'
+import {platformLabel} from '../lib/platforms'
 
 interface Props {
   socials?: SocialLink[]
-}
-
-const LABELS: Record<string, string> = {
-  instagram: 'Instagram',
-  tiktok: 'TikTok',
-  spotify: 'Spotify',
-  appleMusic: 'Apple Music',
-  youtube: 'YouTube',
-  soundcloud: 'SoundCloud',
-  bandcamp: 'Bandcamp',
-  tidal: 'Tidal',
-  deezer: 'Deezer',
-  facebook: 'Facebook',
-  x: 'X',
-  threads: 'Threads',
-  bandsintown: 'Bandsintown',
-  email: 'Email',
 }
 
 const {socials = []} = Astro.props
@@ -31,7 +15,7 @@ const {socials = []} = Astro.props
       {socials.map((s) => (
         <li>
           <a href={s.url} target={s.url.startsWith('mailto:') ? undefined : '_blank'} rel="me noopener">
-            {LABELS[s.platform] ?? s.platform}
+            {platformLabel(s.platform)}
           </a>
         </li>
       ))}

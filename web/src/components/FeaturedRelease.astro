@@ -1,6 +1,6 @@
 ---
 import type {Release} from '../lib/types'
-import {imageUrl} from '../lib/sanity'
+import {platformLabel} from '../lib/platforms'
 
 interface Props {
   release: Release
@@ -8,23 +8,41 @@ interface Props {
 }
 
 const {release, showLyrics = false} = Astro.props
-const art = imageUrl(release.artwork, 800, 800)
-const isOut = new Date(release.releaseDate) <= new Date()
-const date = new Intl.DateTimeFormat('sv-SE', {dateStyle: 'long'}).format(new Date(release.releaseDate))
+// Typographic apostrophes: "C'mon" -> "C’mon"
+const title = release.title.replace(/'/g, '’')
+// Release dates are whole days: out from the start of the release date
+const isOut = release.releaseDate <= new Date().toISOString().slice(0, 10)
+const date = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long'}).format(new Date(release.releaseDate))
+const type = release.type === 'ep' ? 'EP' : release.type === 'album' ? 'Album' : 'Single'
+const links = release.streamingLinks?.filter((l) => l.url) ?? []
+const external = {target: '_blank', rel: 'noopener'}
 ---
 
 <section class="release" aria-labelledby="release-title">
-  {art && <img src={art} alt={`${release.title} artwork`} width="400" height="400" loading="lazy" />}
-  <div>
-    <p class="meta">
-      {release.type?.toUpperCase()}{release.label && ` · ${release.label}`} · {isOut ? date : `Out ${date}`}
-    </p>
-    <h2 id="release-title">{release.title}</h2>
+  <div class="title-box" data-fit-box>
+    <h2 id="release-title" class="title" data-fit>{title}</h2>
+  </div>
+
+  <div class="details">
+    <p class="meta">{type} · {isOut ? 'Out now' : `Out ${date}`}</p>
     {
-      release.smartLink && (
-        <a class="cta" href={release.smartLink} target="_blank" rel="noopener">
-          {isOut ? 'Listen' : 'Pre-save'}
-        </a>
+      (links.length > 0 || release.smartLink) && (
+        <ul class="stream" aria-label={`Listen to ${release.title}`}>
+          {release.smartLink && (
+            <li>
+              <a class="primary" href={release.smartLink} {...external}>
+                {isOut ? 'Listen' : 'Pre-save'}
+              </a>
+            </li>
+          )}
+          {links.map((l) => (
+            <li>
+              <a href={l.url} {...external}>
+                {platformLabel(l.platform)}
+              </a>
+            </li>
+          ))}
+        </ul>
       )
     }
     {
@@ -39,40 +57,141 @@ const date = new Intl.DateTimeFormat('sv-SE', {dateStyle: 'long'}).format(new Da
   </div>
 </section>
 
+<script>
+  // Scale each title to the largest size that fits its box (width and height), wrapping only between words.
+  const fit = (title: HTMLElement) => {
+    const box = title.parentElement!
+    let lo = 16
+    let hi = Math.max(box.clientWidth, box.clientHeight)
+    while (hi - lo > 1) {
+      const mid = Math.floor((lo + hi) / 2)
+      title.style.fontSize = `${mid}px`
+      const fits = title.scrollWidth <= box.clientWidth && title.offsetHeight <= box.clientHeight
+      if (fits) lo = mid
+      else hi = mid
+    }
+    title.style.fontSize = `${lo}px`
+    title.dataset.fitted = ''
+  }
+
+  const titles = [...document.querySelectorAll<HTMLElement>('[data-fit]')]
+  const fitAll = () => titles.forEach(fit)
+
+  // Measure with the real font, then keep fitting as the viewport changes
+  document.fonts.load('400 1em "WT Kormelink"').finally(fitAll)
+  const observer = new ResizeObserver(fitAll)
+  titles.forEach((t) => observer.observe(t.parentElement!))
+</script>
+
 <style>
   .release {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+  }
+
+  /* The title is taken out of flow so the box size comes from the layout, not the text */
+  .title-box {
+    position: relative;
+    flex: 1;
+    min-height: 120px;
+  }
+  .title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    font-family: 'WT Kormelink', var(--font-sans);
+    font-weight: 400;
+    /* No-JS fallback; the script replaces this with an exact fit */
+    font-size: clamp(3.5rem, 17vw, 16rem);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    overflow-wrap: normal;
+    hyphens: manual;
+  }
+
+  .details {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 20px;
-  }
-  img {
-    width: min(240px, 50vw);
-    height: auto;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 24px;
   }
   .meta {
     margin: 0;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-  }
-  h2 {
-    margin: 4px 0 12px;
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-  }
-  .cta {
-    display: inline-block;
-    padding: 10px 18px;
-    border: 1px solid currentColor;
-    text-decoration: none;
-    text-transform: uppercase;
     font-size: 0.875rem;
     letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .stream {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .stream a {
+    display: inline-block;
+    padding: 10px 14px;
+    border: 1px solid #fff;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+  .stream a.primary,
+  .stream a:hover {
+    background: #fff;
+    color: #000;
   }
   .tracks {
-    margin: 12px 0 0;
+    width: 100%;
+    margin: 0;
     padding: 0;
     list-style: none;
     font-size: 0.875rem;
+  }
+
+  @media (max-width: 600px) {
+    .release {
+      gap: 12px;
+    }
+    .title-box {
+      min-height: 80px;
+    }
+    .details {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    /* Phones: one full-width Listen button, platforms as a compact row of large tap targets */
+    .stream {
+      gap: 0 18px;
+    }
+    .stream li:has(.primary) {
+      flex-basis: 100%;
+      margin-bottom: 2px;
+    }
+    .stream a.primary {
+      display: block;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .stream a:not(.primary) {
+      padding: 10px 0;
+      border: 0;
+      background: none;
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
   }
 </style>
