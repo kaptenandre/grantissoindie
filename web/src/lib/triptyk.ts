@@ -16,10 +16,17 @@ export const album = {
   single: {
     title: 'Baby / Baby Pt.2',
     releaseDate: '2026-11-05',
-    // Midnight Stockholm time on release day
-    releaseAt: '2026-11-04T23:00:00Z',
+    // Shown as out now from the announce; real DSP links replace the Linkfire ones on release
+    releaseAt: '2026-11-02T00:00:00Z',
     smartLink: 'https://skolhaus.lnk.to/baby',
-    streamingLinks: [] as {platform: string; url: string}[],
+    streamingLinks: [
+      {platform: 'spotify', url: 'https://skolhaus.lnk.to/baby'},
+      {platform: 'appleMusic', url: 'https://skolhaus.lnk.to/baby'},
+      {platform: 'tidal', url: 'https://skolhaus.lnk.to/baby'},
+      {platform: 'youtubeMusic', url: 'https://skolhaus.lnk.to/baby'},
+      {platform: 'deezer', url: 'https://skolhaus.lnk.to/baby'},
+      {platform: 'amazonMusic', url: 'https://skolhaus.lnk.to/baby'},
+    ] as {platform: string; url: string}[],
   },
   video: {
     mp4: '/triptyk/baby-169.mp4',

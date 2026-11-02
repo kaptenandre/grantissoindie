@@ -32,11 +32,11 @@ const preorder = album.preorderUrl || '#vinyl'
       New single · {single.title} · <span data-status>{singleOut ? 'Out now' : `Out ${fmt(single.releaseDate)}`}</span>
     </p>
     <ul class="stream">
-      <li><a href={single.smartLink} {...external} data-cta>{singleOut ? 'Listen' : 'Pre-save'}</a></li>
+      <li><a class="solid" href={single.smartLink} {...external} data-cta>{singleOut ? 'Listen' : 'Pre-save'}</a></li>
       {
         single.streamingLinks.map((l) => (
           <li>
-            <a class="text" href={l.url} {...external}>
+            <a href={l.url} {...external}>
               {platformLabel(l.platform)}
             </a>
           </li>
@@ -149,13 +149,26 @@ const preorder = album.preorderUrl || '#vinyl'
       flex: 1;
     }
     .buttons a,
-    .stream a:not(.text) {
+    .stream li:first-child a {
       display: block;
       padding: calc(14px - var(--optical-shift)) 12px calc(14px + var(--optical-shift));
       text-align: center;
     }
-    .stream li:has(a:not(.text)) {
+    /* Phones: Listen full width, platforms as underlined text below */
+    .stream {
+      gap: 0 18px;
+    }
+    .stream li:first-child {
       flex-basis: 100%;
+      margin-bottom: 2px;
+    }
+    .stream li:not(:first-child) a {
+      padding: 10px 0;
+      border: 0;
+      background: none;
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 4px;
     }
   }
 </style>

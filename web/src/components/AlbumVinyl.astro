@@ -14,8 +14,9 @@ const facts = [
 const preorder = album.preorderUrl || undefined
 ---
 
-<section id="vinyl" class="vinyl" aria-labelledby="vinyl-title">
+<section id="vinyl" class="vinyl" aria-labelledby="vinyl-title" data-reveal>
   <img
+    data-reveal-bg
     class="mockup"
     src="/triptyk/vinyl-900.webp"
     srcset="/triptyk/vinyl-900.webp 900w, /triptyk/vinyl-1600.webp 1600w"
@@ -26,8 +27,8 @@ const preorder = album.preorderUrl || undefined
     loading="lazy"
     decoding="async"
   />
-  <div class="info">
-    <h2 id="vinyl-title">{album.title} on vinyl</h2>
+  <div class="info" data-reveal-fg>
+    <h2 id="vinyl-title">{album.title}</h2>
     <dl>
       {
         facts.map(([k, v]) => (
@@ -45,7 +46,7 @@ const preorder = album.preorderUrl || undefined
 <style>
   .vinyl {
     display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.45fr);
     align-items: center;
     gap: clamp(32px, 5vw, 80px);
     min-height: 100svh;
@@ -60,16 +61,16 @@ const preorder = album.preorderUrl || undefined
     margin: 0 0 24px;
     font-family: 'WT Kormelink', var(--font-sans);
     font-weight: 400;
-    font-size: clamp(2.25rem, 4.5vw, 4.5rem);
+    font-size: clamp(2.25rem, 3.4vw, 3.5rem);
     line-height: 0.95;
   }
   dl {
     margin: 0 0 28px;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
   }
   dl div {
     display: grid;
-    grid-template-columns: 6.5em 1fr;
+    grid-template-columns: 5.5em 1fr;
     gap: 16px;
     padding: 9px 0;
     border-top: 1px solid rgb(255 255 255 / 0.35);

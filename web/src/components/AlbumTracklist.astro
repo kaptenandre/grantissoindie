@@ -3,9 +3,10 @@ import {album} from '../lib/triptyk'
 const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII']
 ---
 
-<section id="tracklist" class="tracklist" aria-labelledby="tracklist-title">
+<section id="tracklist" class="tracklist" aria-labelledby="tracklist-title" data-reveal>
   <h2 id="tracklist-title" class="visually-hidden">Tracklist</h2>
   <img
+    data-reveal-bg
     class="photo"
     src="/triptyk/photo-1200.jpg"
     srcset="/triptyk/photo-1200.jpg 1200w, /triptyk/photo-2200.jpg 2200w"
@@ -17,6 +18,7 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'
   <!-- White-on-black handwriting: screen blend drops the black so only the type sits on the photo.
        The square image is centred on the hub of the flower, so it turns around its true centre. -->
   <img
+    data-reveal-fg
     class="type"
     src="/triptyk/tracklist-round-1200.jpg"
     srcset="/triptyk/tracklist-round-1200.jpg 1200w, /triptyk/tracklist-round-2200.jpg 2200w"

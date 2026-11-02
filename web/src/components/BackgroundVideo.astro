@@ -47,9 +47,20 @@ const hasVideo = Boolean(video?.mp4 || video?.webm)
     background: var(--bg);
   }
   .bg-media {
+    animation: bg-in 2.4s ease both;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  @keyframes bg-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bg-media {
+      animation: none;
+    }
   }
   .bg-overlay {
     position: absolute;

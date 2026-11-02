@@ -2,9 +2,10 @@
 import {album} from '../lib/triptyk'
 ---
 
-<section id="credits" class="credits" aria-labelledby="credits-title">
+<section id="credits" class="credits" aria-labelledby="credits-title" data-reveal>
+  <div class="bg-img" data-reveal-bg></div>
   <h2 id="credits-title" class="visually-hidden">Credits</h2>
-  <dl>
+  <dl data-reveal-fg>
     {
       album.credits.map((c) => (
         <div class="group">
@@ -27,10 +28,17 @@ import {album} from '../lib/triptyk'
     display: flex;
     align-items: center;
     padding: clamp(48px, 8vw, 120px) var(--gutter);
+    isolation: isolate;
+    background: #000;
+  }
+  .bg-img {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     background: #1d2340 url('/triptyk/back-2200.jpg') center / cover no-repeat;
   }
   @media (max-width: 900px) {
-    .credits {
+    .bg-img {
       background-image: url('/triptyk/back-1200.jpg');
     }
   }

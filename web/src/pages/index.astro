@@ -58,6 +58,26 @@ const video = isAlbum ? album.video : s.backgroundVideo
   </footer>
 </Base>
 
+<script>
+  // Album mode: reveal sections as they scroll into view (no-op when there are none)
+  const sections = document.querySelectorAll('[data-reveal]')
+  if ('IntersectionObserver' in window && sections.length) {
+    document.documentElement.classList.add('reveal-ready')
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in')
+            io.unobserve(e.target)
+          }
+        }
+      },
+      {threshold: 0.2},
+    )
+    sections.forEach((el) => io.observe(el))
+  }
+</script>
+
 <style>
   /* One screen: header top, footer pinned to the bottom, content fills the space between */
   :global(body) {

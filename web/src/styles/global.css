@@ -133,3 +133,26 @@ body > footer {
     animation: none;
   }
 }
+
+/* Sections below the first screen: background fades in when scrolled into view, then the content.
+   Only hidden once the script has marked the page, so nothing stays invisible without JS. */
+:root.reveal-ready [data-reveal] [data-reveal-bg],
+:root.reveal-ready [data-reveal] [data-reveal-fg] {
+  opacity: 0;
+  transition: opacity 2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+:root.reveal-ready [data-reveal] [data-reveal-fg] {
+  transition-duration: 2.2s;
+  transition-delay: 0.9s;
+}
+:root.reveal-ready [data-reveal].in [data-reveal-bg],
+:root.reveal-ready [data-reveal].in [data-reveal-fg] {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root.reveal-ready [data-reveal] [data-reveal-bg],
+  :root.reveal-ready [data-reveal] [data-reveal-fg] {
+    opacity: 1;
+    transition: none;
+  }
+}
