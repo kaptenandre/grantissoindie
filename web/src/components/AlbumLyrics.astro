@@ -5,15 +5,19 @@ import {releasedLyrics} from '../lib/lyrics'
 const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII']
 const byTitle = new Map(releasedLyrics.map((s) => [s.title, s.lyrics]))
 const stanzas = (text: string) => text.split(/\n\s*\n/).map((s) => s.split('\n'))
-const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitle.get(title)}))
+const rows = album.tracks.map((title, i) => ({i, n: roman[i], title, lyrics: byTitle.get(title)}))
+// Desktop shows three columns (I–V, VI–IX, X–XIII); each is its own list so opening a song only moves its column
+const columns = [rows.slice(0, 5), rows.slice(5, 9), rows.slice(9)]
 ---
 
 <section id="lyrics" class="lyrics" aria-labelledby="lyrics-title" data-reveal>
   <h2 id="lyrics-title" class="label" data-line style="--i: 0">Lyrics</h2>
-  <ol class="songs">
+  <div class="cols">
+  {columns.map((col) => (
+  <ol class="songs" start={col[0].i + 1}>
     {
-      rows.map((row, i) => (
-        <li data-line style={`--i: ${i + 1}`}>
+      col.map((row) => (
+        <li data-line style={`--i: ${row.i + 1}`}>
           {row.lyrics ? (
             <details data-lyric>
               <summary>
@@ -46,6 +50,8 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
       ))
     }
   </ol>
+  ))}
+  </div>
 </section>
 
 <script>
@@ -90,6 +96,12 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: var(--caps-tracking);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 0 40px;
   }
   .songs {
     margin: 0;
@@ -160,9 +172,6 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
     overflow: hidden;
   }
   .text {
-    /* Desktop: as many columns as fit, so an opened song stays short */
-    columns: 4 220px;
-    column-gap: 40px;
     padding: 6px 0 28px calc(3.2em + 12px);
     font-size: 0.875rem;
     line-height: 1.45;
@@ -174,6 +183,14 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
   .text p {
     margin: 0 0 1.1em;
     break-inside: avoid;
+  }
+  @media (max-width: 900px) {
+    .cols {
+      grid-template-columns: 1fr;
+    }
+    .songs + .songs {
+      border-top: 0;
+    }
   }
   @media (max-width: 600px) {
     summary,
