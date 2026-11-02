@@ -9,7 +9,6 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
 ---
 
 <section id="lyrics" class="lyrics" aria-labelledby="lyrics-title" data-reveal>
-  <div class="bg-img" data-reveal-bg></div>
   <h2 id="lyrics-title" class="label" data-line style="--i: 0">Lyrics</h2>
   <ol class="songs">
     {
@@ -80,24 +79,10 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
 </script>
 
 <style>
-  /* Anchored to the top so an opened song pushes the list downwards */
+  /* Compact, on black. Anchored to the top so an opened song pushes the list downwards */
   .lyrics {
-    position: relative;
-    isolation: isolate;
-    min-height: 100svh;
-    padding: clamp(64px, 9vw, 140px) var(--gutter);
+    padding: clamp(48px, 6vw, 96px) var(--gutter);
     background: #000;
-  }
-  .bg-img {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: #1d2340 url('/triptyk/back-2200.jpg') center / cover no-repeat;
-  }
-  @media (max-width: 900px) {
-    .bg-img {
-      background-image: url('/triptyk/back-1200.jpg');
-    }
   }
   .label {
     margin: 0 0 20px;
@@ -107,7 +92,6 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
     letter-spacing: var(--caps-tracking);
   }
   .songs {
-    max-width: 860px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -122,7 +106,7 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
     grid-template-columns: 3.2em 1fr auto;
     align-items: baseline;
     gap: 12px;
-    padding: 12px 0 10px;
+    padding: 8px 0 6px;
   }
   summary {
     cursor: pointer;
@@ -137,7 +121,7 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
   }
   .title {
     font-family: 'WT Kormelink', var(--font-sans);
-    font-size: clamp(1.5rem, 2.8vw, 2.4rem);
+    font-size: clamp(1.25rem, 1.9vw, 1.75rem);
     line-height: 1;
   }
   .unreleased {
@@ -176,10 +160,11 @@ const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitl
     overflow: hidden;
   }
   .text {
-    columns: 2 260px;
-    column-gap: 48px;
-    padding: 6px 0 32px calc(3.2em + 12px);
-    font-size: 0.9375rem;
+    /* Desktop: as many columns as fit, so an opened song stays short */
+    columns: 4 220px;
+    column-gap: 40px;
+    padding: 6px 0 28px calc(3.2em + 12px);
+    font-size: 0.875rem;
     line-height: 1.45;
     transition: opacity 0.6s ease 0.15s;
   }
