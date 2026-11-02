@@ -2,12 +2,12 @@
 import {album} from '../lib/triptyk'
 import {releasedLyrics} from '../lib/lyrics'
 
-const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII']
+const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV']
 const byTitle = new Map(releasedLyrics.map((s) => [s.title, s.lyrics]))
 const stanzas = (text: string) => text.split(/\n\s*\n/).map((s) => s.split('\n'))
-// Index 0 is the intro (Siren Call), shown without a numeral
-const rows = album.tracks.map((title, i) => ({i, n: i === 0 ? '' : roman[i - 1], title, lyrics: byTitle.get(title)}))
-// Desktop shows three columns, one per movement (intro + I–IV, V–IX, X–XIII); each is its own list so opening a song only moves its column
+// Numbered as in the label copy, Siren Call is I
+const rows = album.tracks.map((title, i) => ({i, n: roman[i], title, lyrics: byTitle.get(title)}))
+// Desktop shows three columns, one per movement (I–V, VI–X, XI–XIV); each is its own list so opening a song only moves its column
 const columns = [rows.slice(0, 5), rows.slice(5, 10), rows.slice(10)]
 ---
 

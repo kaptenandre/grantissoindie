@@ -34,7 +34,7 @@ export const album = {
     posterUrl: '/triptyk/baby-169-poster.jpg',
     mobileMp4: '/triptyk/baby-916.mp4',
   },
-  /** Titles as in the label copy (SH030). Siren Call is the unnumbered intro; I–XIII follow the tracklist art */
+  /** Titles as in the label copy (SH030). Numbered I–XIV in this order (Siren Call is I) */
   tracks: [
     'Siren Call',
     'Never Looking Back',
