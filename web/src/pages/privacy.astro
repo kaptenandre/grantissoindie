@@ -9,6 +9,7 @@ const company = 'Arketyp Artist Services AB'
 const label = 'Skolhaus'
 const contactEmail = 'info@arketyp.se'
 const updated = '2 November 2026'
+const gaId = 'G-YMP4XDNPTS'
 ---
 
 <Base title="Privacy & Cookies" description={`How ${s.artistName} and ${label} handle your personal data.`}>
@@ -34,22 +35,31 @@ const updated = '2 November 2026'
       <li>Country, so we can tell you about shows and releases where you are</li>
       <li>When and where you signed up, and that you agreed to receive updates</li>
     </ul>
+    <p>
+      If you accept cookies, we also collect statistics about how the site is used: pages viewed, clicks on links,
+      roughly where you are (country/city), and your device and browser. This does not tell us who you are.
+    </p>
 
     <h2>Why we use it</h2>
     <p>
-      To send you news about {s.artistName}: new music, videos, shows and merch. The legal basis is your consent (GDPR
-      article 6.1.a). We never sell your data.
+      To send you news about {s.artistName}: new music, videos, shows and merch, and, if you accept cookies, to
+      understand how the site is used so we can improve it and our campaigns. The legal basis for both is your consent
+      (GDPR article 6.1.a). We never sell your data.
     </p>
 
     <h2>Who handles it for us</h2>
     <p>
       Sign-ups are stored in Mailchimp (Intuit Inc.), which sends our emails and texts. Mailchimp may process data in the
-      United States under the EU–US Data Privacy Framework and the EU standard contractual clauses. The site is hosted by
-      Netlify.
+      United States under the EU–US Data Privacy Framework and the EU standard contractual clauses. Statistics are
+      handled by Google Analytics (Google Ireland Ltd), which may also transfer data to the United States under the same
+      framework. Videos are played from YouTube (Google). The site is hosted by Netlify.
     </p>
 
     <h2>How long we keep it</h2>
-    <p>Until you unsubscribe or ask us to delete it. After that we remove it within 30 days.</p>
+    <p>
+      Sign-up details: until you unsubscribe or ask us to delete it. After that we remove it within 30 days. Statistics:
+      Google Analytics keeps them for up to 14 months, and its cookies expire after at most 2 years.
+    </p>
 
     <h2>Your rights</h2>
     <p>
@@ -60,11 +70,22 @@ const updated = '2 November 2026'
       >.
     </p>
 
-    <h2>Cookies</h2>
+    <h2 id="cookies">Cookies</h2>
     <p>
-      This website does not use cookies, analytics or tracking pixels. The music video is only loaded from YouTube (in
-      its privacy-enhanced mode) when you press play; from then on YouTube’s own cookie and privacy policies apply. Links
-      to streaming services, shops and social media take you to other sites, which have their own policies.
+      We only set cookies if you accept them in the cookie banner. If you decline, nothing is loaded from Google
+      Analytics. Your choice is remembered in your browser.
+    </p>
+    <ul>
+      <li>
+        <strong>_ga</strong> and <strong>_ga_{gaId.replace('G-', '')}</strong> (Google Analytics): tell visits apart and
+        count page views. Expire after up to 2 years.
+      </li>
+    </ul>
+    <p>
+      You can change your mind at any time: <a href="#cookies" data-cookie-settings>cookie settings</a>. If you
+      withdraw consent, the cookies are removed. The music videos are only loaded from YouTube (in its privacy-enhanced
+      mode) when you press play; from then on YouTube’s own cookie and privacy policies apply. Links to streaming
+      services, shops and social media take you to other sites, which have their own policies.
     </p>
 
     <h2>Contact</h2>

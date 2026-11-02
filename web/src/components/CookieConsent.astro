@@ -1,0 +1,151 @@
+---
+// Google Analytics 4. Nothing loads, and no cookies are set, until the visitor accepts.
+const GA_ID = 'G-YMP4XDNPTS'
+---
+
+<div class="cookies" role="dialog" aria-live="polite" aria-label="Cookies" data-consent hidden>
+  <p>
+    We use cookies to see how the site is used (Google Analytics). Only if you say yes.{' '}
+    <a href="/privacy#cookies">Read more</a>
+  </p>
+  <div class="actions">
+    <button type="button" data-choice="denied">Decline</button>
+    <button type="button" class="solid" data-choice="granted">Accept</button>
+  </div>
+</div>
+
+<script is:inline define:vars={{GA_ID}}>
+  ;(() => {
+    const KEY = 'cookie-consent'
+    const banner = document.querySelector('[data-consent]')
+    const read = () => {
+      try {
+        return localStorage.getItem(KEY)
+      } catch {
+        return null
+      }
+    }
+    const save = (v) => {
+      try {
+        localStorage.setItem(KEY, v)
+      } catch {}
+    }
+    let loaded = false
+    const loadGA = () => {
+      if (loaded) return
+      loaded = true
+      window.dataLayer = window.dataLayer || []
+      window.gtag = function () {
+        window.dataLayer.push(arguments)
+      }
+      window.gtag('js', new Date())
+      window.gtag('config', GA_ID)
+      const s = document.createElement('script')
+      s.async = true
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`
+      document.head.appendChild(s)
+    }
+    // Withdrawing consent: remove the GA cookies on this domain
+    const clearGA = () => {
+      for (const c of document.cookie.split(';')) {
+        const name = c.split('=')[0].trim()
+        if (name.startsWith('_ga')) {
+          const host = location.hostname
+          for (const domain of ['', host, `.${host.split('.').slice(-2).join('.')}`]) {
+            document.cookie = `${name}=; Max-Age=0; path=/${domain ? `; domain=${domain}` : ''}`
+          }
+        }
+      }
+    }
+    const choice = read()
+    if (choice === 'granted') loadGA()
+    else if (!choice) banner.hidden = false
+
+    banner.querySelectorAll('[data-choice]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const value = btn.dataset.choice
+        save(value)
+        banner.hidden = true
+        if (value === 'granted') loadGA()
+        else if (loaded) {
+          clearGA()
+          location.reload()
+        } else clearGA()
+      }),
+    )
+    // "Cookie settings" links anywhere on the site reopen the banner
+    document.addEventListener('click', (e) => {
+      const open = e.target.closest?.('[data-cookie-settings]')
+      if (open) {
+        e.preventDefault()
+        banner.hidden = false
+      }
+    })
+  })()
+</script>
+
+<style>
+  .cookies {
+    position: fixed;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: var(--gutter);
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    max-width: 640px;
+    margin-left: auto;
+    padding: 16px 18px;
+    background: #000;
+    border: 1px solid rgb(255 255 255 / 0.5);
+    color: #fff;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    animation: cookies-in 0.8s ease 1.5s both;
+  }
+  .cookies[hidden] {
+    display: none;
+  }
+  @keyframes cookies-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  p {
+    flex: 1 1 260px;
+    margin: 0;
+  }
+  a {
+    color: #fff;
+    text-underline-offset: 3px;
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+  button {
+    padding: calc(10px - var(--optical-shift)) 16px calc(10px + var(--optical-shift));
+    border: 1px solid #fff;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    text-transform: uppercase;
+    letter-spacing: var(--caps-tracking);
+    line-height: 1;
+    cursor: pointer;
+  }
+  button.solid,
+  button:hover {
+    background: #fff;
+    color: #000;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cookies {
+      animation: none;
+    }
+  }
+</style>

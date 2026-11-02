@@ -3,6 +3,7 @@ import '../styles/global.css'
 import {getSettings} from '../lib/settings'
 import {imageUrl} from '../lib/sanity'
 import {NOINDEX} from 'astro:env/server'
+import CookieConsent from '../components/CookieConsent.astro'
 
 interface Props {
   title?: string
@@ -61,5 +62,6 @@ const jsonLd = {
   </head>
   <body>
     <slot />
+    <CookieConsent />
   </body>
 </html>

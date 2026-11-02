@@ -59,6 +59,7 @@ const video = isAlbum ? album.video : s.backgroundVideo
     {/* Album mode shows the socials large in the signup section above */}
     {!isAlbum && <Socials socials={s.socials} />}
     <a class="legal" href="/privacy">Privacy &amp; Cookies</a>
+    <a class="legal cookie-settings" href="/privacy#cookies" data-cookie-settings>Cookie settings</a>
     <Credits />
     {s.lyricsEnabled && <a href="/lyrics">Lyrics</a>}
   </footer>
@@ -136,6 +137,8 @@ const video = isAlbum ? album.video : s.backgroundVideo
   .legal {
     color: #fff;
     text-decoration: none;
+  }
+  .cookie-settings {
     margin-right: auto;
   }
   .legal:hover {
