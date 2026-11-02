@@ -11,7 +11,7 @@ import AlbumHero from '../components/AlbumHero.astro'
 import AlbumTracklist from '../components/AlbumTracklist.astro'
 import AlbumVinyl from '../components/AlbumVinyl.astro'
 import AlbumSignup from '../components/AlbumSignup.astro'
-import AlbumCredits from '../components/AlbumCredits.astro'
+import AlbumLyrics from '../components/AlbumLyrics.astro'
 import {getSettings} from '../lib/settings'
 import {album} from '../lib/triptyk'
 import {SITE_MODE} from 'astro:env/server'
@@ -50,7 +50,7 @@ const video = isAlbum ? album.video : s.backgroundVideo
 
   {isAlbum && <AlbumTracklist />}
   {isAlbum && <AlbumVinyl />}
-  {isAlbum && <AlbumCredits />}
+  {isAlbum && <AlbumLyrics />}
   {isAlbum && <AlbumSignup settings={s} />}
 
   <footer class:list={{album: isAlbum}}>

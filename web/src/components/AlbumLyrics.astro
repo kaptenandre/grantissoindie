@@ -1,0 +1,138 @@
+---
+import {releasedLyrics} from '../lib/lyrics'
+
+const stanzas = (text: string) => text.split(/\n\s*\n/).map((s) => s.split('\n'))
+---
+
+<section id="lyrics" class="lyrics" aria-labelledby="lyrics-title" data-reveal>
+  <div class="bg-img" data-reveal-bg></div>
+  <h2 id="lyrics-title" class="label" data-line style="--i: 0">Lyrics</h2>
+  <div class="songs">
+    {
+      releasedLyrics.map((song, i) => (
+        <details data-line style={`--i: ${i + 1}`}>
+          <summary>
+            <span class="title">{song.title}</span>
+            <span class="toggle" aria-hidden="true" />
+          </summary>
+          <div class="text">
+            {stanzas(song.lyrics).map((lines) => (
+              <p>
+                {lines.map((l, j) => (
+                  <>
+                    {j > 0 && <br />}
+                    {l}
+                  </>
+                ))}
+              </p>
+            ))}
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .lyrics {
+    position: relative;
+    isolation: isolate;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(64px, 9vw, 140px) var(--gutter);
+    background: #000;
+  }
+  .bg-img {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: #1d2340 url('/triptyk/back-2200.jpg') center / cover no-repeat;
+  }
+  @media (max-width: 900px) {
+    .bg-img {
+      background-image: url('/triptyk/back-1200.jpg');
+    }
+  }
+  .label {
+    margin: 0 0 20px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: var(--caps-tracking);
+  }
+  .songs {
+    max-width: 760px;
+    border-top: 1px solid rgb(255 255 255 / 0.6);
+  }
+  details {
+    border-bottom: 1px solid rgb(255 255 255 / 0.6);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0 12px;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .title {
+    font-family: 'WT Kormelink', var(--font-sans);
+    font-size: clamp(1.75rem, 3.6vw, 3rem);
+    line-height: 1;
+  }
+  /* Plus that turns into a minus */
+  .toggle {
+    position: relative;
+    flex: none;
+    width: 18px;
+    height: 18px;
+  }
+  .toggle::before,
+  .toggle::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: #fff;
+    transition: transform 0.4s ease;
+  }
+  .toggle::after {
+    transform: rotate(90deg);
+  }
+  details[open] .toggle::after {
+    transform: rotate(0deg);
+  }
+  .text {
+    columns: 2 260px;
+    column-gap: 48px;
+    padding: 8px 0 32px;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+  .text p {
+    margin: 0 0 1.1em;
+    break-inside: avoid;
+  }
+  details[open] .text {
+    animation: open 0.8s ease both;
+  }
+  @keyframes open {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    details[open] .text {
+      animation: none;
+    }
+  }
+</style>
