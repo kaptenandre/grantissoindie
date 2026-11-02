@@ -4,13 +4,14 @@ import Credits from '../components/Credits.astro'
 import {getSettings} from '../lib/settings'
 
 const s = await getSettings()
-// TODO: confirm the controller details and contact address with Skolhaus
-const company = 'Skolhaus'
+// Controller per the artist contract; TODO: contact address
+const company = 'Arketyp Artist Services AB'
+const label = 'Skolhaus'
 const contactEmail = ''
 const updated = '2 November 2026'
 ---
 
-<Base title="Privacy & Cookies" description={`How ${s.artistName} and ${company} handle your personal data.`}>
+<Base title="Privacy & Cookies" description={`How ${s.artistName} and ${label} handle your personal data.`}>
   <header class="top">
     <a href="/">{s.artistName}</a>
   </header>
@@ -21,8 +22,8 @@ const updated = '2 November 2026'
 
     <h2>Who we are</h2>
     <p>
-      This website is run by {company}, the record label of {s.artistName}. {company} is the controller of the personal
-      data collected here.
+      This website is run by {company} through its record label {label}, which releases the music of {s.artistName}.
+      {company} is the controller of the personal data collected here.
     </p>
 
     <h2>What we collect</h2>
