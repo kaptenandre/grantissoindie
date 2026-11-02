@@ -68,7 +68,7 @@ const consentText =
       <input type="checkbox" name="consent" required />
       <span>
         {consentText}
-        {config.privacyUrl && <a href={config.privacyUrl} target="_blank" rel="noopener">Privacy policy</a>}
+        {' '}<a href={config.privacyUrl || '/privacy'}>Privacy policy</a>
       </span>
     </label>
 

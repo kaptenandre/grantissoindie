@@ -1,0 +1,137 @@
+---
+import Base from '../layouts/Base.astro'
+import Credits from '../components/Credits.astro'
+import {getSettings} from '../lib/settings'
+
+const s = await getSettings()
+// TODO: confirm the controller details and contact address with Skolhaus
+const company = 'Skolhaus'
+const contactEmail = ''
+const updated = '2 November 2026'
+---
+
+<Base title="Privacy & Cookies" description={`How ${s.artistName} and ${company} handle your personal data.`}>
+  <header class="top">
+    <a href="/">{s.artistName}</a>
+  </header>
+
+  <main class="policy">
+    <h1>Privacy &amp; Cookies</h1>
+    <p class="updated">Last updated {updated}</p>
+
+    <h2>Who we are</h2>
+    <p>
+      This website is run by {company}, the record label of {s.artistName}. {company} is the controller of the personal
+      data collected here.
+    </p>
+
+    <h2>What we collect</h2>
+    <p>We only collect what you give us when you sign up for updates:</p>
+    <ul>
+      <li>Email address</li>
+      <li>Phone number, if you add it for SMS updates</li>
+      <li>Country, so we can tell you about shows and releases where you are</li>
+      <li>When and where you signed up, and that you agreed to receive updates</li>
+    </ul>
+
+    <h2>Why we use it</h2>
+    <p>
+      To send you news about {s.artistName}: new music, videos, shows and merch. The legal basis is your consent (GDPR
+      article 6.1.a). We never sell your data.
+    </p>
+
+    <h2>Who handles it for us</h2>
+    <p>
+      Sign-ups are stored in Mailchimp (Intuit Inc.), which sends our emails and texts. Mailchimp may process data in the
+      United States under the EU–US Data Privacy Framework and the EU standard contractual clauses. The site is hosted by
+      Netlify.
+    </p>
+
+    <h2>How long we keep it</h2>
+    <p>Until you unsubscribe or ask us to delete it. After that we remove it within 30 days.</p>
+
+    <h2>Your rights</h2>
+    <p>
+      You can ask to see, correct, move or delete your data, and you can withdraw your consent at any time. Every email
+      has an unsubscribe link, and you can reply STOP to any text. If you think we handle your data wrongly you can
+      complain to the Swedish Authority for Privacy Protection (IMY), <a href="https://www.imy.se" target="_blank"
+        rel="noopener">imy.se</a
+      >.
+    </p>
+
+    <h2>Cookies</h2>
+    <p>
+      This website does not use cookies, analytics or tracking pixels. Links to streaming services, shops and social media
+      take you to other sites, which have their own cookie and privacy policies.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions or requests:{' '}
+      {contactEmail ? <a href={`mailto:${contactEmail}`}>{contactEmail}</a> : <mark>[contact email]</mark>}
+    </p>
+  </main>
+
+  <footer class="bottom">
+    <Credits />
+  </footer>
+</Base>
+
+<style>
+  :global(html) {
+    background: #000;
+  }
+  .top,
+  .bottom {
+    padding: var(--gutter);
+  }
+  .top a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: var(--caps-tracking);
+  }
+  .bottom {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .policy {
+    max-width: 640px;
+    padding: clamp(24px, 6vw, 80px) var(--gutter) clamp(48px, 8vw, 120px);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-family: 'WT Kormelink', var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 0.95;
+  }
+  .updated {
+    margin: 0 0 40px;
+    font-size: 0.8125rem;
+  }
+  h2 {
+    margin: 32px 0 8px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
+  }
+  p,
+  ul {
+    margin: 0 0 12px;
+  }
+  ul {
+    padding-left: 1.1em;
+  }
+  a {
+    text-underline-offset: 3px;
+  }
+  mark {
+    background: #fff;
+    color: #000;
+  }
+</style>

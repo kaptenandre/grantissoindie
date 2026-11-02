@@ -56,6 +56,7 @@ const video = isAlbum ? album.video : s.backgroundVideo
   <footer class:list={{album: isAlbum}}>
     {/* Album mode shows the socials large in the signup section above */}
     {!isAlbum && <Socials socials={s.socials} />}
+    <a class="legal" href="/privacy">Privacy &amp; Cookies</a>
     <Credits />
     {s.lyricsEnabled && <a href="/lyrics">Lyrics</a>}
   </footer>
@@ -115,6 +116,15 @@ const video = isAlbum ? album.video : s.backgroundVideo
   .tagline {
     margin: 0;
     color: var(--muted);
+  }
+  .legal {
+    color: #fff;
+    text-decoration: none;
+    margin-right: auto;
+  }
+  .legal:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
   /* Album mode: the page ends on black, not on the fixed video */
   footer.album {
