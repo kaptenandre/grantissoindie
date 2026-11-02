@@ -9,6 +9,7 @@ import Newsletter from '../components/Newsletter.astro'
 import Shows from '../components/Shows.astro'
 import AlbumHero from '../components/AlbumHero.astro'
 import AlbumTracklist from '../components/AlbumTracklist.astro'
+import AlbumVinyl from '../components/AlbumVinyl.astro'
 import AlbumCredits from '../components/AlbumCredits.astro'
 import {getSettings} from '../lib/settings'
 import {album} from '../lib/triptyk'
@@ -16,8 +17,8 @@ import {SITE_MODE} from 'astro:env/server'
 
 const s = await getSettings()
 const isAlbum = SITE_MODE === 'album'
-// Album mode: portrait phones get the 9:16 Baby cut
-const video = isAlbum ? {...s.backgroundVideo, mobileMp4: album.video.mobileMp4} : s.backgroundVideo
+// Album mode: Baby video, 3:2 on desktop and 9:16 on portrait phones
+const video = isAlbum ? album.video : s.backgroundVideo
 ---
 
 <Base>
@@ -47,6 +48,7 @@ const video = isAlbum ? {...s.backgroundVideo, mobileMp4: album.video.mobileMp4}
   </div>
 
   {isAlbum && <AlbumTracklist />}
+  {isAlbum && <AlbumVinyl />}
   {isAlbum && <AlbumCredits />}
 
   <footer>

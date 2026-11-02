@@ -14,12 +14,15 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'
     loading="lazy"
     decoding="async"
   />
-  <!-- White-on-black handwriting: screen blend drops the black so only the type sits on the photo -->
+  <!-- White-on-black handwriting: screen blend drops the black so only the type sits on the photo.
+       The square image is centred on the hub of the flower, so it turns around its true centre. -->
   <img
     class="type"
-    src="/triptyk/tracklist-1200.jpg"
-    srcset="/triptyk/tracklist-1200.jpg 1200w, /triptyk/tracklist-2200.jpg 2200w"
-    sizes="(max-aspect-ratio: 3414/3857) 100vw, 88svh"
+    src="/triptyk/tracklist-round-1200.jpg"
+    srcset="/triptyk/tracklist-round-1200.jpg 1200w, /triptyk/tracklist-round-2200.jpg 2200w"
+    sizes="min(100vw, 96svh)"
+    width="2200"
+    height="2200"
     alt=""
     loading="lazy"
     decoding="async"
@@ -50,18 +53,26 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'
   }
   .type {
     position: relative;
-    width: min(100%, calc(94svh * 3414 / 3857));
+    width: min(100vw, 96svh);
     height: auto;
     mix-blend-mode: screen;
+    animation: spin 240s linear infinite;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .type {
+      animation: none;
+    }
   }
   /* Phones: show the whole photo, type on top at the same size */
   @media (max-aspect-ratio: 3/4) {
     .tracklist {
       min-height: 0;
       aspect-ratio: 3296 / 4000;
-    }
-    .type {
-      width: 100%;
     }
   }
 </style>

@@ -1,9 +1,15 @@
 ---
 import {album} from '../lib/triptyk'
+import {platformLabel} from '../lib/platforms'
 
-const date = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', timeZone: 'UTC'}).format(
-  new Date(`${album.releaseDate}T12:00:00Z`),
-)
+const fmt = (ymd: string) =>
+  new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', timeZone: 'UTC'}).format(new Date(`${ymd}T12:00:00Z`))
+const single = album.single
+const singleOut = Date.now() >= new Date(single.releaseAt).getTime()
+const external = {target: '_blank', rel: 'noopener'}
+// Until the real links exist the buttons point at the vinyl section
+const presave = album.presaveUrl || '#vinyl'
+const preorder = album.preorderUrl || '#vinyl'
 ---
 
 <section class="album" aria-labelledby="album-title">
@@ -13,14 +19,47 @@ const date = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', ti
     </h2>
   </div>
 
-  <div class="details">
-    <p class="meta">The new album · Out {date}</p>
-    <ul class="links">
-      <li><a href="#tracklist">Tracklist</a></li>
-      <li><a href="#credits">Credits</a></li>
+  <div class="row">
+    <p class="meta">The new album · Out {fmt(album.releaseDate)}</p>
+    <ul class="buttons">
+      <li><a class="solid" href={presave} {...(album.presaveUrl ? external : {})}>Pre-save album</a></li>
+      <li><a href={preorder} {...(album.preorderUrl ? external : {})}>Pre-order vinyl</a></li>
+    </ul>
+  </div>
+
+  <div class="row single" data-single data-out-at={single.releaseAt}>
+    <p class="meta">
+      New single · {single.title} · <span data-status>{singleOut ? 'Out now' : `Out ${fmt(single.releaseDate)}`}</span>
+    </p>
+    <ul class="stream">
+      <li><a href={single.smartLink} {...external} data-cta>{singleOut ? 'Listen' : 'Pre-save'}</a></li>
+      {
+        single.streamingLinks.map((l) => (
+          <li>
+            <a class="text" href={l.url} {...external}>
+              {platformLabel(l.platform)}
+            </a>
+          </li>
+        ))
+      }
     </ul>
   </div>
 </section>
+
+<script>
+  // Flip the single from Pre-save to Listen at release time without a rebuild
+  const el = document.querySelector<HTMLElement>('[data-single]')
+  const at = el ? new Date(el.dataset.outAt!).getTime() : NaN
+  const flip = () => {
+    el!.querySelector('[data-cta]')!.textContent = 'Listen'
+    el!.querySelector('[data-status]')!.textContent = 'Out now'
+  }
+  if (el && !Number.isNaN(at)) {
+    const wait = at - Date.now()
+    if (wait <= 0) flip()
+    else if (wait < 2 ** 31 - 1) setTimeout(flip, wait)
+  }
+</script>
 
 <style>
   .album {
@@ -28,7 +67,7 @@ const date = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', ti
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    gap: 16px;
+    gap: 14px;
     min-height: 0;
   }
   .logo-box {
@@ -36,6 +75,7 @@ const date = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', ti
     display: flex;
     align-items: flex-end;
     min-height: 60px;
+    margin-bottom: 6px;
   }
   .logo {
     margin: 0;
@@ -45,12 +85,16 @@ const date = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', ti
     width: 100%;
     height: auto;
   }
-  .details {
+  .row {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     gap: 8px 24px;
+  }
+  .single {
+    padding-top: 14px;
+    border-top: 1px solid rgb(255 255 255 / 0.5);
   }
   .meta {
     margin: 0;
@@ -59,14 +103,15 @@ const date = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', ti
     word-spacing: var(--caps-word-spacing);
     text-transform: uppercase;
   }
-  .links {
+  ul {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .links a {
+  a {
     display: inline-block;
     padding: calc(10px - var(--optical-shift)) 14px calc(10px + var(--optical-shift));
     border: 1px solid #fff;
@@ -78,25 +123,39 @@ const date = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', ti
     word-spacing: var(--caps-word-spacing);
     line-height: 1;
   }
-  .links a:hover {
+  a.solid,
+  a:hover {
     background: #fff;
     color: #000;
+  }
+  a.text {
+    border-color: transparent;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  a.text:hover {
+    background: none;
+    color: #fff;
   }
   @media (max-width: 600px) {
     .album {
       gap: 12px;
     }
-    .details {
+    .row {
       flex-direction: column;
       align-items: stretch;
     }
-    .links li {
+    .buttons li {
       flex: 1;
     }
-    .links a {
+    .buttons a,
+    .stream a:not(.text) {
       display: block;
       padding: calc(14px - var(--optical-shift)) 12px calc(14px + var(--optical-shift));
       text-align: center;
+    }
+    .stream li:has(a:not(.text)) {
+      flex-basis: 100%;
     }
   }
 </style>
