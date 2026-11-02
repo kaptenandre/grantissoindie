@@ -1,46 +1,90 @@
 ---
+import {album} from '../lib/triptyk'
 import {releasedLyrics} from '../lib/lyrics'
 
+const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII']
+const byTitle = new Map(releasedLyrics.map((s) => [s.title, s.lyrics]))
 const stanzas = (text: string) => text.split(/\n\s*\n/).map((s) => s.split('\n'))
+const rows = album.tracks.map((title, i) => ({n: roman[i], title, lyrics: byTitle.get(title)}))
 ---
 
 <section id="lyrics" class="lyrics" aria-labelledby="lyrics-title" data-reveal>
   <div class="bg-img" data-reveal-bg></div>
   <h2 id="lyrics-title" class="label" data-line style="--i: 0">Lyrics</h2>
-  <div class="songs">
+  <ol class="songs">
     {
-      releasedLyrics.map((song, i) => (
-        <details data-line style={`--i: ${i + 1}`}>
-          <summary>
-            <span class="title">{song.title}</span>
-            <span class="toggle" aria-hidden="true" />
-          </summary>
-          <div class="text">
-            {stanzas(song.lyrics).map((lines) => (
-              <p>
-                {lines.map((l, j) => (
-                  <>
-                    {j > 0 && <br />}
-                    {l}
-                  </>
-                ))}
-              </p>
-            ))}
-          </div>
-        </details>
+      rows.map((row, i) => (
+        <li data-line style={`--i: ${i + 1}`}>
+          {row.lyrics ? (
+            <details data-lyric>
+              <summary>
+                <span class="n">{row.n}</span>
+                <span class="title">{row.title}</span>
+                <span class="toggle" aria-hidden="true" />
+              </summary>
+              <div class="panel">
+                <div class="text">
+                  {stanzas(row.lyrics).map((lines) => (
+                    <p>
+                      {lines.map((l, j) => (
+                        <>
+                          {j > 0 && <br />}
+                          {l}
+                        </>
+                      ))}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </details>
+          ) : (
+            <div class="row unreleased">
+              <span class="n">{row.n}</span>
+              <span class="title">{row.title}</span>
+            </div>
+          )}
+        </li>
       ))
     }
-  </div>
+  </ol>
 </section>
 
+<script>
+  // Smooth open/close: animate the panel height instead of the default jump
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+  document.querySelectorAll<HTMLDetailsElement>('[data-lyric]').forEach((details) => {
+    const summary = details.querySelector('summary')!
+    const panel = details.querySelector<HTMLElement>('.panel')!
+    let anim: Animation | undefined
+    summary.addEventListener('click', (e) => {
+      if (reduce) return
+      e.preventDefault()
+      anim?.cancel()
+      const opening = !details.open
+      if (opening) details.open = true
+      const full = panel.scrollHeight
+      const from = opening ? 0 : panel.offsetHeight
+      const to = opening ? full : 0
+      details.classList.toggle('is-open', opening)
+      anim = panel.animate([{height: `${from}px`}, {height: `${to}px`}], {
+        duration: Math.min(900, 350 + full * 0.25),
+        easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+      })
+      anim.onfinish = () => {
+        if (!opening) details.open = false
+        anim = undefined
+      }
+    })
+    details.addEventListener('toggle', () => details.classList.toggle('is-open', details.open))
+  })
+</script>
+
 <style>
+  /* Anchored to the top so an opened song pushes the list downwards */
   .lyrics {
     position: relative;
     isolation: isolate;
     min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     padding: clamp(64px, 9vw, 140px) var(--gutter);
     background: #000;
   }
@@ -63,35 +107,53 @@ const stanzas = (text: string) => text.split(/\n\s*\n/).map((s) => s.split('\n')
     letter-spacing: var(--caps-tracking);
   }
   .songs {
-    max-width: 760px;
+    max-width: 860px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
     border-top: 1px solid rgb(255 255 255 / 0.6);
   }
-  details {
+  .songs > li {
     border-bottom: 1px solid rgb(255 255 255 / 0.6);
   }
+  summary,
+  .row {
+    display: grid;
+    grid-template-columns: 3.2em 1fr auto;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px 0 10px;
+  }
   summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 14px 0 12px;
     cursor: pointer;
     list-style: none;
   }
   summary::-webkit-details-marker {
     display: none;
   }
+  .n {
+    font-size: 0.8125rem;
+    letter-spacing: var(--caps-tracking);
+  }
   .title {
     font-family: 'WT Kormelink', var(--font-sans);
-    font-size: clamp(1.75rem, 3.6vw, 3rem);
+    font-size: clamp(1.5rem, 2.8vw, 2.4rem);
     line-height: 1;
+  }
+  .unreleased {
+    opacity: 0.45;
+  }
+  summary:hover .title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 6px;
   }
   /* Plus that turns into a minus */
   .toggle {
     position: relative;
-    flex: none;
-    width: 18px;
-    height: 18px;
+    align-self: center;
+    width: 16px;
+    height: 16px;
   }
   .toggle::before,
   .toggle::after {
@@ -102,37 +164,39 @@ const stanzas = (text: string) => text.split(/\n\s*\n/).map((s) => s.split('\n')
     top: 50%;
     height: 1px;
     background: #fff;
-    transition: transform 0.4s ease;
+    transition: transform 0.5s ease;
   }
   .toggle::after {
     transform: rotate(90deg);
   }
-  details[open] .toggle::after {
+  details.is-open .toggle::after {
     transform: rotate(0deg);
+  }
+  .panel {
+    overflow: hidden;
   }
   .text {
     columns: 2 260px;
     column-gap: 48px;
-    padding: 8px 0 32px;
+    padding: 6px 0 32px calc(3.2em + 12px);
     font-size: 0.9375rem;
     line-height: 1.45;
+    transition: opacity 0.6s ease 0.15s;
+  }
+  details:not(.is-open) .text {
+    opacity: 0;
   }
   .text p {
     margin: 0 0 1.1em;
     break-inside: avoid;
   }
-  details[open] .text {
-    animation: open 0.8s ease both;
-  }
-  @keyframes open {
-    from {
-      opacity: 0;
-      transform: translateY(-6px);
+  @media (max-width: 600px) {
+    summary,
+    .row {
+      grid-template-columns: 2.6em 1fr auto;
     }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    details[open] .text {
-      animation: none;
+    .text {
+      padding-left: 0;
     }
   }
 </style>

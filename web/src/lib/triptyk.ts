@@ -45,7 +45,7 @@ export const album = {
     'Declaration',
     'Non-Zero',
     'Let it all out',
-    'Baby pt. 2',
+    'Baby Pt.2',
     'The last one',
     'Waking the witch',
   ],
