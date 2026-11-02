@@ -2,6 +2,7 @@
 import '../styles/global.css'
 import {getSettings} from '../lib/settings'
 import {imageUrl} from '../lib/sanity'
+import {NOINDEX} from 'astro:env/server'
 
 interface Props {
   title?: string
@@ -38,6 +39,7 @@ const jsonLd = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {NOINDEX && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={settings.artistName} />
     <meta property="og:url" content={canonical} />

@@ -1,0 +1,67 @@
+---
+import {album} from '../lib/triptyk'
+const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII']
+---
+
+<section id="tracklist" class="tracklist" aria-labelledby="tracklist-title">
+  <h2 id="tracklist-title" class="visually-hidden">Tracklist</h2>
+  <img
+    class="photo"
+    src="/triptyk/photo-1200.jpg"
+    srcset="/triptyk/photo-1200.jpg 1200w, /triptyk/photo-2200.jpg 2200w"
+    sizes="100vw"
+    alt=""
+    loading="lazy"
+    decoding="async"
+  />
+  <!-- White-on-black handwriting: screen blend drops the black so only the type sits on the photo -->
+  <img
+    class="type"
+    src="/triptyk/tracklist-1200.jpg"
+    srcset="/triptyk/tracklist-1200.jpg 1200w, /triptyk/tracklist-2200.jpg 2200w"
+    sizes="(max-aspect-ratio: 3414/3857) 100vw, 88svh"
+    alt=""
+    loading="lazy"
+    decoding="async"
+  />
+  <ol class="visually-hidden">
+    {album.tracks.map((t, i) => <li>{roman[i]}. {t}</li>)}
+  </ol>
+</section>
+
+<style>
+  .tracklist {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: 100svh;
+    overflow: hidden;
+    background: #000;
+  }
+  .photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: 50% 35%;
+  }
+  .type {
+    position: relative;
+    width: min(100%, calc(94svh * 3414 / 3857));
+    height: auto;
+    mix-blend-mode: screen;
+  }
+  /* Phones: show the whole photo, type on top at the same size */
+  @media (max-aspect-ratio: 3/4) {
+    .tracklist {
+      min-height: 0;
+      aspect-ratio: 3296 / 4000;
+    }
+    .type {
+      width: 100%;
+    }
+  }
+</style>

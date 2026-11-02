@@ -1,0 +1,71 @@
+---
+import {album} from '../lib/triptyk'
+---
+
+<section id="credits" class="credits" aria-labelledby="credits-title">
+  <h2 id="credits-title" class="visually-hidden">Credits</h2>
+  <dl>
+    {
+      album.credits.map((c) => (
+        <div class="group">
+          <dt>{c.group}</dt>
+          <dd>
+            {c.lines.map((l) => (
+              <span>{l}</span>
+            ))}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</section>
+
+<style>
+  .credits {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: clamp(48px, 8vw, 120px) var(--gutter);
+    background: #1d2340 url('/triptyk/back-2200.jpg') center / cover no-repeat;
+  }
+  @media (max-width: 900px) {
+    .credits {
+      background-image: url('/triptyk/back-1200.jpg');
+    }
+  }
+  dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 28px 48px;
+    width: 100%;
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.3;
+  }
+  .group {
+    display: grid;
+    grid-template-columns: 9.5em 1fr;
+    gap: 0 16px;
+    align-content: start;
+  }
+  dt {
+    text-transform: uppercase;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
+  }
+  dd {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 600px) {
+    dl {
+      font-size: 0.8125rem;
+      gap: 22px;
+    }
+    .group {
+      grid-template-columns: 8.5em 1fr;
+    }
+  }
+</style>

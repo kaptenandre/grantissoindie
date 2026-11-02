@@ -7,24 +7,34 @@ import Credits from '../components/Credits.astro'
 import FeaturedRelease from '../components/FeaturedRelease.astro'
 import Newsletter from '../components/Newsletter.astro'
 import Shows from '../components/Shows.astro'
+import AlbumHero from '../components/AlbumHero.astro'
+import AlbumTracklist from '../components/AlbumTracklist.astro'
+import AlbumCredits from '../components/AlbumCredits.astro'
 import {getSettings} from '../lib/settings'
+import {album} from '../lib/triptyk'
+import {SITE_MODE} from 'astro:env/server'
 
 const s = await getSettings()
+const isAlbum = SITE_MODE === 'album'
+// Album mode: portrait phones get the 9:16 Baby cut
+const video = isAlbum ? {...s.backgroundVideo, mobileMp4: album.video.mobileMp4} : s.backgroundVideo
 ---
 
 <Base>
   {
-    s.featuredRelease && (
+    !isAlbum && s.featuredRelease && (
       <link slot="head" rel="preload" href="/fonts/wt-kormelink-roman.woff2" as="font" type="font/woff2" crossorigin />
     )
   }
-  <BackgroundVideo video={s.backgroundVideo} />
+  <BackgroundVideo video={video} />
+  <div class:list={['screen', {album: isAlbum}]}>
   <TopNav artistName={s.artistName} links={s.navLinks} />
 
   <main>
     <h1 class="visually-hidden">{s.artistName}</h1>
     {s.tagline && <p class="tagline">{s.tagline}</p>}
-    {s.featuredRelease && <FeaturedRelease release={s.featuredRelease} showLyrics={s.lyricsEnabled} />}
+    {isAlbum && <AlbumHero />}
+    {!isAlbum && s.featuredRelease && <FeaturedRelease release={s.featuredRelease} showLyrics={s.lyricsEnabled} />}
     {
       s.shows?.enabled && (
         <Shows server:defer artist={s.shows.bandsintownArtist} emptyText={s.shows.emptyText}>
@@ -34,6 +44,10 @@ const s = await getSettings()
     }
     {s.newsletter?.enabled !== false && <Newsletter config={s.newsletter ?? {}} />}
   </main>
+  </div>
+
+  {isAlbum && <AlbumTracklist />}
+  {isAlbum && <AlbumCredits />}
 
   <footer>
     <Socials socials={s.socials} />
@@ -48,6 +62,16 @@ const s = await getSettings()
     display: flex;
     flex-direction: column;
     min-height: 100svh;
+  }
+  /* Header + main fill the first screen; in album mode the sections and footer follow below */
+  .screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen.album {
+    min-height: 100svh;
+    padding-bottom: var(--gutter);
   }
   main {
     flex: 1;

@@ -8,6 +8,10 @@ export default defineConfig({
   adapter: netlify(),
   env: {
     schema: {
+      // 'album' shows the TRIPTYK announce instead of the featured single
+      SITE_MODE: envField.enum({context: 'server', access: 'public', values: ['single', 'album'], default: 'single'}),
+      // Staging/previews: keep search engines out
+      NOINDEX: envField.boolean({context: 'server', access: 'public', default: false}),
       SANITY_PROJECT_ID: envField.string({context: 'server', access: 'public', optional: true}),
       SANITY_DATASET: envField.string({context: 'server', access: 'public', default: 'production'}),
       SANITY_API_VERSION: envField.string({context: 'server', access: 'public', default: '2026-09-01'}),
