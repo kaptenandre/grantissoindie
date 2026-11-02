@@ -51,6 +51,9 @@ export const album = {
     'The Last One',
     'Waking The Witch',
   ],
-  /** Music video embedded on the page. TODO: switch to the Baby video when it is out */
-  musicVideo: {id: 'zv1ncAiVLuo', title: 'C’mon Caroline (Official Video)'},
+  /** Music videos embedded on the page, newest first */
+  musicVideos: [
+    {id: 'dd1zAPjtWSU', title: 'Baby (Official Video)'},
+    {id: 'zv1ncAiVLuo', title: 'C’mon Caroline (Official Video)'},
+  ],
 }
