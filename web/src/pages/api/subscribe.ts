@@ -19,7 +19,8 @@ export const POST: APIRoute = async ({request, redirect}) => {
     if (!email && !phone) throw new SubscribeError('Add an email or a phone number')
     if (form.get('consent') !== 'on') throw new SubscribeError('Please accept the terms to sign up')
 
-    await getProvider().subscribe({email, phone, source: String(form.get('source') ?? 'website')})
+    const country = String(form.get('country') ?? '').trim().slice(0, 64) || undefined
+    await getProvider().subscribe({email, phone, country, source: String(form.get('source') ?? 'website')})
     return wantsJson ? json(200, {ok: true}) : redirect('/?subscribed=1', 303)
   } catch (err) {
     if (err instanceof SubscribeError) {

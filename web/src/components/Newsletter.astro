@@ -1,23 +1,33 @@
 ---
 import type {SiteSettings} from '../lib/types'
 
+import {countries} from '../lib/countries'
+
 interface Props {
   config: NonNullable<SiteSettings['newsletter']>
+  /** Ask for the visitor's country (saved in Mailchimp) */
+  collectCountry?: boolean
+  /** Tagged on the contact, e.g. "website" or "website-footer" */
+  source?: string
+  /** Prefix for element ids, so the form can appear twice on a page */
+  id?: string
+  heading?: string
 }
 
-const {config} = Astro.props
+const {config, collectCountry = false, source = 'website', id = 'newsletter'} = Astro.props
+const countryList = collectCountry ? countries() : []
 const status = Astro.url.searchParams.get('subscribed')
 const consentText =
   config.consentText ||
   'By signing up you agree to receive email and/or SMS updates. Unsubscribe at any time. Message & data rates may apply.'
 ---
 
-<section class="newsletter" aria-labelledby="newsletter-title" data-success={config.successMessage}>
-  <h2 id="newsletter-title">{config.heading || 'Get updates'}</h2>
+<section class="newsletter" aria-labelledby={`${id}-title`} data-success={config.successMessage}>
+  <h2 id={`${id}-title`}>{Astro.props.heading || config.heading || 'Get updates'}</h2>
   {config.body && <p>{config.body}</p>}
 
   <form method="post" action="/api/subscribe" data-newsletter>
-    <input type="hidden" name="source" value="website" />
+    <input type="hidden" name="source" value={source} />
     <!-- Honeypot -->
     <label class="visually-hidden" aria-hidden="true">
       Company <input type="text" name="company" tabindex="-1" autocomplete="off" />
@@ -33,6 +43,21 @@ const consentText =
           <label>
             <span class="visually-hidden">Phone</span>
             <input type="tel" name="phone" placeholder="Phone (SMS)" autocomplete="tel" inputmode="tel" />
+          </label>
+        )
+      }
+      {
+        collectCountry && (
+          <label class="country">
+            <span class="visually-hidden">Country</span>
+            <select name="country" autocomplete="country-name" data-country>
+              <option value="">Country</option>
+              {countryList.map((c) => (
+                <option value={c.name} data-code={c.code}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </label>
         )
       }
@@ -55,6 +80,21 @@ const consentText =
 </section>
 
 <script>
+  // Preselect the country from the browser language (sv-SE -> Sweden); the visitor can change it
+  document.querySelectorAll<HTMLSelectElement>('[data-country]').forEach((select) => {
+    const region = navigator.languages
+      .map((l) => {
+        try {
+          return new Intl.Locale(l).maximize().region
+        } catch {
+          return undefined
+        }
+      })
+      .find(Boolean)
+    const match = region && select.querySelector<HTMLOptionElement>(`option[data-code="${region}"]`)
+    if (match && !select.value) match.selected = true
+  })
+
   // Progressive enhancement: submit without a page reload when JS is available.
   document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
     const status = form.querySelector<HTMLElement>('[data-status]')!
@@ -107,7 +147,8 @@ const consentText =
     flex: 1 1 180px;
   }
   input[type='email'],
-  input[type='tel'] {
+  input[type='tel'],
+  select {
     width: 100%;
     padding: calc(12px - var(--optical-shift)) 12px calc(12px + var(--optical-shift));
     border: 1px solid currentColor;
@@ -125,6 +166,17 @@ const consentText =
     letter-spacing: var(--caps-tracking);
     word-spacing: var(--caps-word-spacing);
     cursor: pointer;
+  }
+  select {
+    appearance: none;
+    padding-right: 32px;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23fff'/%3E%3C/svg%3E") no-repeat right 12px center;
+    border-radius: 0;
+    cursor: pointer;
+  }
+  select option {
+    background: #000;
+    color: #fff;
   }
   input::placeholder {
     color: #fff;

@@ -20,33 +20,35 @@ const preorder = album.preorderUrl || undefined
     class="mockup"
     src="/triptyk/vinyl-900.webp"
     srcset="/triptyk/vinyl-900.webp 900w, /triptyk/vinyl-1600.webp 1600w"
-    sizes="(max-width: 800px) 100vw, 55vw"
+    sizes="(max-width: 800px) 80vw, 36vw"
     width="1600"
     height="1052"
     alt={`${album.title} on vinyl`}
     loading="lazy"
     decoding="async"
   />
-  <div class="info" data-reveal-fg>
-    <h2 id="vinyl-title">{album.title}</h2>
+  <div class="info">
+    <h2 id="vinyl-title" data-line style="--i: 0">{album.title}</h2>
     <dl>
       {
-        facts.map(([k, v]) => (
-          <div>
+        facts.map(([k, v], i) => (
+          <div data-line style={`--i: ${i + 1}`}>
             <dt>{k}</dt>
             <dd>{v}</dd>
           </div>
         ))
       }
     </dl>
-    <a class="cta" href={preorder ?? '#'} {...(preorder ? {target: '_blank', rel: 'noopener'} : {})}>Pre-order now</a>
+    <a class="cta" data-line style={`--i: ${facts.length + 1}`} href={preorder ?? '#'} {...(preorder ? {target: '_blank', rel: 'noopener'} : {})}>Pre-order now</a>
   </div>
 </section>
 
 <style>
   .vinyl {
     display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.45fr);
+    /* Small mockup with plenty of negative space around it */
+    grid-template-columns: minmax(0, 36vw) minmax(0, 320px);
+    justify-content: center;
     align-items: center;
     gap: clamp(32px, 5vw, 80px);
     min-height: 100svh;
@@ -101,6 +103,10 @@ const preorder = album.preorderUrl || undefined
     .vinyl {
       grid-template-columns: 1fr;
       min-height: 0;
+    }
+    .mockup {
+      width: 80%;
+      justify-self: center;
     }
     .cta {
       display: block;

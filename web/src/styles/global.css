@@ -149,10 +149,25 @@ body > footer {
 :root.reveal-ready [data-reveal].in [data-reveal-fg] {
   opacity: 1;
 }
+/* Text animates in line by line: --i is the line's position */
+:root.reveal-ready [data-reveal] [data-line] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 1.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition-delay: calc(0.8s + var(--i, 0) * 0.08s);
+}
+:root.reveal-ready [data-reveal].in [data-line] {
+  opacity: 1;
+  transform: none;
+}
 @media (prefers-reduced-motion: reduce) {
   :root.reveal-ready [data-reveal] [data-reveal-bg],
-  :root.reveal-ready [data-reveal] [data-reveal-fg] {
+  :root.reveal-ready [data-reveal] [data-reveal-fg],
+  :root.reveal-ready [data-reveal] [data-line] {
     opacity: 1;
+    transform: none;
     transition: none;
   }
 }

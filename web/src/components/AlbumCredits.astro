@@ -1,18 +1,23 @@
 ---
 import {album} from '../lib/triptyk'
+
+// Groups sit in columns, so the stagger runs by row inside each group plus a small offset per group
+const lineIndex = album.credits.map((_, g) => g * 2)
 ---
 
 <section id="credits" class="credits" aria-labelledby="credits-title" data-reveal>
   <div class="bg-img" data-reveal-bg></div>
   <h2 id="credits-title" class="visually-hidden">Credits</h2>
-  <dl data-reveal-fg>
+  <dl>
     {
-      album.credits.map((c) => (
+      album.credits.map((c, g) => (
         <div class="group">
-          <dt>{c.group}</dt>
+          <dt data-line style={`--i: ${lineIndex[g]}`}>{c.group}</dt>
           <dd>
-            {c.lines.map((l) => (
-              <span>{l}</span>
+            {c.lines.map((l, i) => (
+              <span data-line style={`--i: ${lineIndex[g] + i}`}>
+                {l}
+              </span>
             ))}
           </dd>
         </div>

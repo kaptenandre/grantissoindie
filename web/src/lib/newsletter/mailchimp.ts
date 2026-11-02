@@ -2,6 +2,8 @@ import {createHash} from 'node:crypto'
 import {SubscribeError, type NewsletterProvider, type Subscriber} from './types'
 
 const SMS_TAG = 'SMS opt-in'
+/** The audience's existing text field named "country" */
+const COUNTRY_FIELD = 'MMERGE7'
 
 type Options = {
   apiKey: string
@@ -33,7 +35,7 @@ export function mailchimp({apiKey, audienceId, doubleOptIn, tags}: Options): New
 
   return {
     name: 'mailchimp',
-    async subscribe({email, phone, source}: Subscriber) {
+    async subscribe({email, phone, country, source}: Subscriber) {
       if (!email) throw new SubscribeError('Add your email address')
 
       const status = doubleOptIn ? 'pending' : 'subscribed'
@@ -41,8 +43,9 @@ export function mailchimp({apiKey, audienceId, doubleOptIn, tags}: Options): New
         email_address: email,
         status_if_new: status,
         status,
-        ...(phone && {merge_fields: {PHONE: phone}}),
       }
+      const mergeFields = {...(phone && {PHONE: phone}), ...(country && {[COUNTRY_FIELD]: country})}
+      if (Object.keys(mergeFields).length) body.merge_fields = mergeFields
       const sms = phone ? {sms_phone_number: phone, sms_subscription_status: 'subscribed'} : {}
 
       let res = await upsert(email, {...body, ...sms})

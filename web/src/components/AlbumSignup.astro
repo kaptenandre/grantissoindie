@@ -1,0 +1,88 @@
+---
+import Newsletter from './Newsletter.astro'
+import {platformLabel} from '../lib/platforms'
+import type {SiteSettings} from '../lib/types'
+
+interface Props {
+  settings: SiteSettings
+}
+
+const {settings} = Astro.props
+const socials = settings.socials ?? []
+---
+
+<section id="join" class="signup" aria-label="Fan list and socials" data-reveal>
+  <div class="form" data-line style="--i: 0">
+    <Newsletter
+      config={{...settings.newsletter, collectPhone: settings.newsletter?.collectPhone ?? true}}
+      collectCountry
+      source="website-album"
+      id="join-newsletter"
+      heading="Join the fan list"
+    />
+  </div>
+
+  {
+    socials.length > 0 && (
+      <ul class="socials" aria-label="Socials">
+        {socials.map((s, i) => (
+          <li data-line style={`--i: ${i + 1}`}>
+            <a href={s.url} target="_blank" rel="me noopener">
+              {platformLabel(s.platform)}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</section>
+
+<style>
+  .signup {
+    display: grid;
+    grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+    align-items: end;
+    gap: 48px;
+    padding: clamp(64px, 10vw, 140px) var(--gutter) clamp(32px, 4vw, 56px);
+    background: #000;
+  }
+  .form :global(.newsletter h2) {
+    margin-bottom: 16px;
+    font-family: 'WT Kormelink', var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(2.25rem, 4vw, 3.5rem);
+    line-height: 0.95;
+    text-transform: none;
+    letter-spacing: 0;
+    word-spacing: normal;
+  }
+  .socials {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .socials a {
+    color: #fff;
+    text-decoration: none;
+    font-family: 'WT Kormelink', var(--font-sans);
+    font-size: clamp(1.75rem, 3vw, 2.75rem);
+    line-height: 1.05;
+  }
+  .socials a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 6px;
+  }
+  @media (max-width: 800px) {
+    .signup {
+      grid-template-columns: 1fr;
+    }
+    .socials {
+      align-items: flex-start;
+    }
+  }
+</style>

@@ -10,6 +10,7 @@ import Shows from '../components/Shows.astro'
 import AlbumHero from '../components/AlbumHero.astro'
 import AlbumTracklist from '../components/AlbumTracklist.astro'
 import AlbumVinyl from '../components/AlbumVinyl.astro'
+import AlbumSignup from '../components/AlbumSignup.astro'
 import AlbumCredits from '../components/AlbumCredits.astro'
 import {getSettings} from '../lib/settings'
 import {album} from '../lib/triptyk'
@@ -50,9 +51,11 @@ const video = isAlbum ? album.video : s.backgroundVideo
   {isAlbum && <AlbumTracklist />}
   {isAlbum && <AlbumVinyl />}
   {isAlbum && <AlbumCredits />}
+  {isAlbum && <AlbumSignup settings={s} />}
 
-  <footer>
-    <Socials socials={s.socials} />
+  <footer class:list={{album: isAlbum}}>
+    {/* Album mode shows the socials large in the signup section above */}
+    {!isAlbum && <Socials socials={s.socials} />}
     <Credits />
     {s.lyricsEnabled && <a href="/lyrics">Lyrics</a>}
   </footer>
@@ -112,6 +115,10 @@ const video = isAlbum ? album.video : s.backgroundVideo
   .tagline {
     margin: 0;
     color: var(--muted);
+  }
+  /* Album mode: the page ends on black, not on the fixed video */
+  footer.album {
+    background: #000;
   }
   footer {
     display: flex;
