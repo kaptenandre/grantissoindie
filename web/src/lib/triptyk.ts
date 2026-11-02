@@ -14,7 +14,7 @@ export const album = {
   },
   /** The current single, shown under the album buttons */
   single: {
-    title: 'Baby / Baby Pt.2',
+    title: 'Baby / Baby Pt. 2',
     releaseDate: '2026-11-05',
     // Shown as out now from the announce; real DSP links replace the Linkfire ones on release
     releaseAt: '2026-11-02T00:00:00Z',
@@ -34,19 +34,23 @@ export const album = {
     posterUrl: '/triptyk/baby-169-poster.jpg',
     mobileMp4: '/triptyk/baby-916.mp4',
   },
+  /** Titles as in the label copy (SH030). Siren Call is the unnumbered intro; I–XIII follow the tracklist art */
   tracks: [
-    'Never looking back',
-    'Song in my ear',
-    'Powerpoint powermoves',
+    'Siren Call',
+    'Never Looking Back',
+    'Song In My Ear',
+    'Powerpoint Powermoves',
     'C’mon Caroline',
     'Annihilate',
     'Baby',
     'Breathing',
-    'Declaration',
-    'Non-Zero',
-    'Let it all out',
-    'Baby Pt.2',
-    'The last one',
-    'Waking the witch',
+    'Declaration w/ Sara Parkman',
+    'Non Zero',
+    'Let It All Out',
+    'Baby Pt. 2',
+    'The Last One',
+    'Waking The Witch',
   ],
+  /** Music video embedded on the page. TODO: switch to the Baby video when it is out */
+  musicVideo: {id: 'zv1ncAiVLuo', title: 'C’mon Caroline (Official Video)'},
 }

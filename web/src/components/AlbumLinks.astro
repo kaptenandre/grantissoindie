@@ -1,0 +1,198 @@
+---
+import Newsletter from './Newsletter.astro'
+import {album} from '../lib/triptyk'
+import {platformLabel} from '../lib/platforms'
+import type {SiteSettings} from '../lib/types'
+
+interface Props {
+  settings: SiteSettings
+}
+
+const {settings} = Astro.props
+const fmt = (ymd: string) =>
+  new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', timeZone: 'UTC'}).format(new Date(`${ymd}T12:00:00Z`))
+const single = album.single
+const singleOut = Date.now() >= new Date(single.releaseAt).getTime()
+const external = {target: '_blank', rel: 'noopener'}
+// Until the real links exist the buttons point at the vinyl section
+const presave = album.presaveUrl || '#vinyl'
+const preorder = album.preorderUrl || '#vinyl'
+---
+
+<section id="listen" class="links-section" aria-label="Pre-save, pre-order and the new single" data-reveal>
+  <img
+    data-reveal-bg
+    class="photo"
+    src="/triptyk/photo-1200.jpg"
+    srcset="/triptyk/photo-1200.jpg 1200w, /triptyk/photo-2200.jpg 2200w"
+    sizes="100vw"
+    alt=""
+    loading="lazy"
+    decoding="async"
+  />
+  <div class="shade" data-reveal-bg></div>
+
+  <div class="content">
+    <div class="row" data-line style="--i: 0">
+      <p class="meta">The new album · Out {fmt(album.releaseDate)}</p>
+      <ul class="buttons">
+        <li><a class="solid" href={presave} {...(album.presaveUrl ? external : {})}>Pre-save album</a></li>
+        <li><a href={preorder} {...(album.preorderUrl ? external : {})}>Pre-order vinyl</a></li>
+      </ul>
+    </div>
+
+    <div class="row single" data-single data-out-at={single.releaseAt} data-line style="--i: 1">
+      <p class="meta">
+        New single · {single.title} · <span data-status>{singleOut ? 'Out now' : `Out ${fmt(single.releaseDate)}`}</span>
+      </p>
+      <ul class="stream">
+        <li><a class="solid" href={single.smartLink} {...external} data-cta>{singleOut ? 'Listen' : 'Pre-save'}</a></li>
+        {
+          single.streamingLinks.map((l) => (
+            <li>
+              <a href={l.url} {...external}>
+                {platformLabel(l.platform)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    {
+      settings.newsletter?.enabled !== false && (
+        <div class="signup" data-line style="--i: 2">
+          <Newsletter config={settings.newsletter ?? {}} collectCountry source="website-album" />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  // Flip the single from Pre-save to Listen at release time without a rebuild
+  const el = document.querySelector<HTMLElement>('[data-single]')
+  const at = el ? new Date(el.dataset.outAt!).getTime() : NaN
+  const flip = () => {
+    el!.querySelector('[data-cta]')!.textContent = 'Listen'
+    el!.querySelector('[data-status]')!.textContent = 'Out now'
+  }
+  if (el && !Number.isNaN(at)) {
+    const wait = at - Date.now()
+    if (wait <= 0) flip()
+    else if (wait < 2 ** 31 - 1) setTimeout(flip, wait)
+  }
+</script>
+
+<style>
+  .links-section {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: 100svh;
+    padding: clamp(96px, 12vw, 160px) var(--gutter) var(--gutter);
+    overflow: hidden;
+    background: #000;
+  }
+  .photo {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
+  /* Darken the lower part so the white text stays readable on the bright photo */
+  .shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgb(0 0 0 / 0) 35%, rgb(0 0 0 / 0.55) 100%);
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+  }
+  .single {
+    padding-top: 14px;
+    border-top: 1px solid rgb(255 255 255 / 0.5);
+  }
+  .signup {
+    padding-top: 22px;
+  }
+  .meta {
+    margin: 0;
+    font-size: 0.875rem;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
+    text-transform: uppercase;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  ul a {
+    display: inline-block;
+    padding: calc(10px - var(--optical-shift)) 14px calc(10px + var(--optical-shift));
+    border: 1px solid #fff;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
+    line-height: 1;
+  }
+  ul a.solid,
+  ul a:hover {
+    background: #fff;
+    color: #000;
+  }
+  @media (max-width: 600px) {
+    .row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .buttons li {
+      flex: 1;
+    }
+    .buttons a,
+    .stream li:first-child a {
+      display: block;
+      padding: calc(14px - var(--optical-shift)) 12px calc(14px + var(--optical-shift));
+      text-align: center;
+    }
+    /* Phones: Listen full width, platforms as underlined text below */
+    .stream {
+      gap: 0 18px;
+    }
+    .stream li:first-child {
+      flex-basis: 100%;
+      margin-bottom: 2px;
+    }
+    .stream li:not(:first-child) a {
+      padding: 10px 0;
+      border: 0;
+      background: none;
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+</style>

@@ -1,0 +1,89 @@
+---
+import {album} from '../lib/triptyk'
+const {id, title} = album.musicVideo
+// Click-to-play: nothing loads from YouTube (and no YouTube cookies are set) until the visitor presses play
+const poster = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`
+---
+
+<section id="video" class="video" aria-label={title} data-reveal>
+  <div class="frame" data-reveal-bg data-yt={id} data-title={title}>
+    <img src={poster} alt="" loading="lazy" decoding="async" />
+    <button type="button" class="play" aria-label={`Play ${title}`}>
+      <span class="label">Watch video</span>
+    </button>
+  </div>
+  <p class="caption" data-line style="--i: 0">{title}</p>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-yt]').forEach((frame) => {
+    frame.querySelector('button')!.addEventListener('click', () => {
+      const iframe = document.createElement('iframe')
+      iframe.src = `https://www.youtube-nocookie.com/embed/${frame.dataset.yt}?autoplay=1&rel=0&playsinline=1`
+      iframe.title = frame.dataset.title || 'Music video'
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'
+      iframe.allowFullscreen = true
+      frame.replaceChildren(iframe)
+    })
+  })
+</script>
+
+<style>
+  .video {
+    padding: clamp(64px, 9vw, 140px) var(--gutter) 0;
+    background: #000;
+  }
+  .frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: min(100%, 1280px);
+    margin: 0 auto;
+    background: #111;
+    overflow: hidden;
+  }
+  .frame img,
+  .frame :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    border: 0;
+    object-fit: cover;
+  }
+  .play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: rgb(0 0 0 / 0.15);
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+  }
+  .label {
+    padding: calc(14px - var(--optical-shift)) 22px calc(14px + var(--optical-shift));
+    border: 1px solid #fff;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: var(--caps-tracking);
+    word-spacing: var(--caps-word-spacing);
+    line-height: 1;
+    transition:
+      background 0.3s,
+      color 0.3s;
+  }
+  .play:hover .label {
+    background: #fff;
+    color: #000;
+  }
+  .caption {
+    width: min(100%, 1280px);
+    margin: 10px auto 0;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: var(--caps-tracking);
+  }
+</style>

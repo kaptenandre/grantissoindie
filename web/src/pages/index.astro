@@ -8,7 +8,8 @@ import FeaturedRelease from '../components/FeaturedRelease.astro'
 import Newsletter from '../components/Newsletter.astro'
 import Shows from '../components/Shows.astro'
 import AlbumHero from '../components/AlbumHero.astro'
-import AlbumTracklist from '../components/AlbumTracklist.astro'
+import AlbumLinks from '../components/AlbumLinks.astro'
+import AlbumVideo from '../components/AlbumVideo.astro'
 import AlbumVinyl from '../components/AlbumVinyl.astro'
 import AlbumSignup from '../components/AlbumSignup.astro'
 import AlbumLyrics from '../components/AlbumLyrics.astro'
@@ -44,11 +45,12 @@ const video = isAlbum ? album.video : s.backgroundVideo
         </Shows>
       )
     }
-    {s.newsletter?.enabled !== false && <Newsletter config={s.newsletter ?? {}} collectCountry={isAlbum} />}
+    {!isAlbum && s.newsletter?.enabled !== false && <Newsletter config={s.newsletter ?? {}} />}
   </main>
   </div>
 
-  {isAlbum && <AlbumTracklist />}
+  {isAlbum && <AlbumLinks settings={s} />}
+  {isAlbum && <AlbumVideo />}
   {isAlbum && <AlbumVinyl />}
   {isAlbum && <AlbumLyrics />}
   {isAlbum && <AlbumSignup settings={s} />}

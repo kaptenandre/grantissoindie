@@ -1,81 +1,20 @@
 ---
 import {album} from '../lib/triptyk'
-import {platformLabel} from '../lib/platforms'
-
-const fmt = (ymd: string) =>
-  new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', timeZone: 'UTC'}).format(new Date(`${ymd}T12:00:00Z`))
-const single = album.single
-const singleOut = Date.now() >= new Date(single.releaseAt).getTime()
-const external = {target: '_blank', rel: 'noopener'}
-// Until the real links exist the buttons point at the vinyl section
-const presave = album.presaveUrl || '#vinyl'
-const preorder = album.preorderUrl || '#vinyl'
 ---
 
+<!-- First screen: only the logo over the video. Links and sign-up follow on the next screen. -->
 <section class="album" aria-labelledby="album-title">
-  <div class="logo-box">
-    <h2 id="album-title" class="logo">
-      <img src="/triptyk/logo.webp" alt={album.title} width="2400" height="400" fetchpriority="high" />
-    </h2>
-  </div>
-
-  <div class="row">
-    <p class="meta">The new album · Out {fmt(album.releaseDate)}</p>
-    <ul class="buttons">
-      <li><a class="solid" href={presave} {...(album.presaveUrl ? external : {})}>Pre-save album</a></li>
-      <li><a href={preorder} {...(album.preorderUrl ? external : {})}>Pre-order vinyl</a></li>
-    </ul>
-  </div>
-
-  <div class="row single" data-single data-out-at={single.releaseAt}>
-    <p class="meta">
-      New single · {single.title} · <span data-status>{singleOut ? 'Out now' : `Out ${fmt(single.releaseDate)}`}</span>
-    </p>
-    <ul class="stream">
-      <li><a class="solid" href={single.smartLink} {...external} data-cta>{singleOut ? 'Listen' : 'Pre-save'}</a></li>
-      {
-        single.streamingLinks.map((l) => (
-          <li>
-            <a href={l.url} {...external}>
-              {platformLabel(l.platform)}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
+  <h2 id="album-title" class="logo">
+    <img src="/triptyk/logo.webp" alt={album.title} width="2400" height="400" fetchpriority="high" />
+  </h2>
 </section>
-
-<script>
-  // Flip the single from Pre-save to Listen at release time without a rebuild
-  const el = document.querySelector<HTMLElement>('[data-single]')
-  const at = el ? new Date(el.dataset.outAt!).getTime() : NaN
-  const flip = () => {
-    el!.querySelector('[data-cta]')!.textContent = 'Listen'
-    el!.querySelector('[data-status]')!.textContent = 'Out now'
-  }
-  if (el && !Number.isNaN(at)) {
-    const wait = at - Date.now()
-    if (wait <= 0) flip()
-    else if (wait < 2 ** 31 - 1) setTimeout(flip, wait)
-  }
-</script>
 
 <style>
   .album {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: 14px;
-    min-height: 0;
-  }
-  .logo-box {
-    flex: 1;
-    display: flex;
     align-items: flex-end;
-    min-height: 60px;
-    margin-bottom: 6px;
+    min-height: 0;
   }
   .logo {
     margin: 0;
@@ -84,91 +23,5 @@ const preorder = album.preorderUrl || '#vinyl'
   .logo img {
     width: 100%;
     height: auto;
-  }
-  .row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px 24px;
-  }
-  .single {
-    padding-top: 14px;
-    border-top: 1px solid rgb(255 255 255 / 0.5);
-  }
-  .meta {
-    margin: 0;
-    font-size: 0.875rem;
-    letter-spacing: var(--caps-tracking);
-    word-spacing: var(--caps-word-spacing);
-    text-transform: uppercase;
-  }
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  a {
-    display: inline-block;
-    padding: calc(10px - var(--optical-shift)) 14px calc(10px + var(--optical-shift));
-    border: 1px solid #fff;
-    color: #fff;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 0.8125rem;
-    letter-spacing: var(--caps-tracking);
-    word-spacing: var(--caps-word-spacing);
-    line-height: 1;
-  }
-  a.solid,
-  a:hover {
-    background: #fff;
-    color: #000;
-  }
-  a.text {
-    border-color: transparent;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-  a.text:hover {
-    background: none;
-    color: #fff;
-  }
-  @media (max-width: 600px) {
-    .album {
-      gap: 12px;
-    }
-    .row {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .buttons li {
-      flex: 1;
-    }
-    .buttons a,
-    .stream li:first-child a {
-      display: block;
-      padding: calc(14px - var(--optical-shift)) 12px calc(14px + var(--optical-shift));
-      text-align: center;
-    }
-    /* Phones: Listen full width, platforms as underlined text below */
-    .stream {
-      gap: 0 18px;
-    }
-    .stream li:first-child {
-      flex-basis: 100%;
-      margin-bottom: 2px;
-    }
-    .stream li:not(:first-child) a {
-      padding: 10px 0;
-      border: 0;
-      background: none;
-      color: #fff;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
   }
 </style>

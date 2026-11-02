@@ -110,7 +110,7 @@ He wouldn’t call me by my name
 But baby baby baby baby baby baby`,
   },
   {
-    title: 'Baby Pt.2',
+    title: 'Baby Pt. 2',
     lyrics: `Do you wanna know what’s on my mind
 Something you already know somehow
 I’m wet because I’ve seen us
