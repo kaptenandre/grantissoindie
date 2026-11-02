@@ -44,7 +44,7 @@ const video = isAlbum ? album.video : s.backgroundVideo
         </Shows>
       )
     }
-    {s.newsletter?.enabled !== false && <Newsletter config={s.newsletter ?? {}} />}
+    {s.newsletter?.enabled !== false && <Newsletter config={s.newsletter ?? {}} collectCountry={isAlbum} />}
   </main>
   </div>
 
@@ -79,6 +79,20 @@ const video = isAlbum ? album.video : s.backgroundVideo
       {threshold: 0.2},
     )
     sections.forEach((el) => io.observe(el))
+  }
+
+  // Album mode: once the first screen is out of view, hide and pause the fixed video so it can't show through
+  // at the bottom (iOS overscroll, gaps between sections)
+  const hero = document.querySelector('.screen.album')
+  const bgVideo = document.querySelector<HTMLVideoElement>('[data-bg-video]')
+  if (hero && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      const past = !entry.isIntersecting
+      document.documentElement.classList.toggle('past-hero', past)
+      if (!bgVideo) return
+      if (past) bgVideo.pause()
+      else if (bgVideo.autoplay) bgVideo.play().catch(() => {})
+    }).observe(hero)
   }
 </script>
 

@@ -171,3 +171,8 @@ body > footer {
     transition: none;
   }
 }
+
+/* Album mode: the fixed background video is only shown while the first screen is in view */
+:root.past-hero .bg {
+  visibility: hidden;
+}

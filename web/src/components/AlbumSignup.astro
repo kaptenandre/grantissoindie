@@ -1,5 +1,4 @@
 ---
-import Newsletter from './Newsletter.astro'
 import {platformLabel} from '../lib/platforms'
 import type {SiteSettings} from '../lib/types'
 
@@ -11,22 +10,12 @@ const {settings} = Astro.props
 const socials = settings.socials ?? []
 ---
 
-<section id="join" class="signup" aria-label="Fan list and socials" data-reveal>
-  <div class="form" data-line style="--i: 0">
-    <Newsletter
-      config={{...settings.newsletter, collectPhone: settings.newsletter?.collectPhone ?? true}}
-      collectCountry
-      source="website-album"
-      id="join-newsletter"
-      heading="Join the fan list"
-    />
-  </div>
-
+<section id="socials" class="signup" aria-label="Socials" data-reveal>
   {
     socials.length > 0 && (
       <ul class="socials" aria-label="Socials">
         {socials.map((s, i) => (
-          <li data-line style={`--i: ${i + 1}`}>
+          <li data-line style={`--i: ${i}`}>
             <a href={s.url} target="_blank" rel="me noopener">
               {platformLabel(s.platform)}
             </a>
@@ -39,28 +28,14 @@ const socials = settings.socials ?? []
 
 <style>
   .signup {
-    display: grid;
-    grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
-    align-items: end;
-    gap: 48px;
     padding: clamp(64px, 10vw, 140px) var(--gutter) clamp(32px, 4vw, 56px);
     background: #000;
   }
-  .form :global(.newsletter h2) {
-    margin-bottom: 16px;
-    font-family: 'WT Kormelink', var(--font-sans);
-    font-weight: 400;
-    font-size: clamp(2.25rem, 4vw, 3.5rem);
-    line-height: 0.95;
-    text-transform: none;
-    letter-spacing: 0;
-    word-spacing: normal;
-  }
+  /* Desktop: one column per platform across the page. Phones: stacked */
   .socials {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px 24px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -77,12 +52,10 @@ const socials = settings.socials ?? []
     text-decoration-thickness: 1px;
     text-underline-offset: 6px;
   }
-  @media (max-width: 800px) {
-    .signup {
-      grid-template-columns: 1fr;
-    }
+  @media (max-width: 600px) {
     .socials {
-      align-items: flex-start;
+      grid-template-columns: 1fr;
+      gap: 2px;
     }
   }
 </style>
