@@ -6,7 +6,11 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'
 const byTitle = new Map(releasedLyrics.map((s) => [s.title, s.lyrics]))
 const stanzas = (text: string) => text.split(/\n\s*\n/).map((s) => s.split('\n'))
 // Numbered as in the label copy, Siren Call is I
-const rows = album.tracks.map((title, i) => ({i, n: roman[i], title, lyrics: byTitle.get(title)}))
+// "Declaration w/ Sara Parkman": the feature is set at half size
+const rows = album.tracks.map((title, i) => {
+  const [name, feat] = title.split(/ (?=w\/ )/)
+  return {i, n: roman[i], title, name, feat, lyrics: byTitle.get(title)}
+})
 // Desktop shows three columns, one per movement (I–V, VI–X, XI–XIV); each is its own list so opening a song only moves its column
 const columns = [rows.slice(0, 5), rows.slice(5, 10), rows.slice(10)]
 ---
@@ -23,7 +27,7 @@ const columns = [rows.slice(0, 5), rows.slice(5, 10), rows.slice(10)]
             <details data-lyric>
               <summary>
                 <span class="n">{row.n}</span>
-                <span class="title">{row.title}</span>
+                <span class="title">{row.name}{row.feat && <span class="feat"> {row.feat}</span>}</span>
                 <span class="toggle" aria-hidden="true" />
               </summary>
               <div class="panel">
@@ -44,7 +48,7 @@ const columns = [rows.slice(0, 5), rows.slice(5, 10), rows.slice(10)]
           ) : (
             <div class="row unreleased">
               <span class="n">{row.n}</span>
-              <span class="title">{row.title}</span>
+              <span class="title">{row.name}{row.feat && <span class="feat"> {row.feat}</span>}</span>
             </div>
           )}
         </li>
@@ -136,6 +140,9 @@ const columns = [rows.slice(0, 5), rows.slice(5, 10), rows.slice(10)]
     font-family: 'WT Kormelink', var(--font-sans);
     font-size: clamp(1.25rem, 1.9vw, 1.75rem);
     line-height: 1;
+  }
+  .feat {
+    font-size: 0.5em;
   }
   .unreleased {
     opacity: 0.45;
