@@ -95,6 +95,96 @@ const consentText =
     if (match && !select.value) match.selected = true
   })
 
+  // Desktop: replace the system option list with our own (search + keyboard). The <select> stays the form value.
+  if (matchMedia('(pointer: fine)').matches) {
+    document.querySelectorAll<HTMLSelectElement>('[data-country]').forEach((select) => {
+      const wrap = select.parentElement!
+      const options = [...select.options].filter((o) => o.value)
+      let panel: HTMLDivElement | null = null
+      let active = 0
+      let shown: HTMLOptionElement[] = []
+
+      const close = (focus = true) => {
+        panel?.remove()
+        panel = null
+        if (focus) select.focus()
+      }
+      const choose = (opt: HTMLOptionElement) => {
+        select.value = opt.value
+        select.dispatchEvent(new Event('change', {bubbles: true}))
+        close()
+      }
+      const render = (list: HTMLUListElement, query: string) => {
+        const q = query.trim().toLowerCase()
+        shown = q ? options.filter((o) => o.text.toLowerCase().includes(q)) : options
+        active = Math.max(0, shown.findIndex((o) => o.value === select.value))
+        list.replaceChildren(
+          ...(shown.length
+            ? shown.map((o, i) => {
+                const li = document.createElement('li')
+                li.role = 'option'
+                li.textContent = o.text
+                li.setAttribute('aria-selected', String(o.value === select.value))
+                li.classList.toggle('active', i === active)
+                li.addEventListener('mousedown', (e) => {
+                  e.preventDefault()
+                  choose(o)
+                })
+                li.addEventListener('mousemove', () => highlight(list, i))
+                return li
+              })
+            : [Object.assign(document.createElement('li'), {className: 'empty', textContent: 'No match'})]),
+        )
+        list.children[active]?.scrollIntoView({block: 'nearest'})
+      }
+      const highlight = (list: HTMLUListElement, i: number) => {
+        if (!shown.length) return
+        active = (i + shown.length) % shown.length
+        ;[...list.children].forEach((li, j) => li.classList.toggle('active', j === active))
+        list.children[active]?.scrollIntoView({block: 'nearest'})
+      }
+      const open = () => {
+        if (panel) return close()
+        panel = document.createElement('div')
+        panel.className = 'picker'
+        const search = Object.assign(document.createElement('input'), {
+          type: 'text',
+          placeholder: 'Search country',
+          autocomplete: 'off',
+        })
+        search.setAttribute('aria-label', 'Search country')
+        const list = document.createElement('ul')
+        list.role = 'listbox'
+        panel.append(search, list)
+        wrap.append(panel)
+        render(list, '')
+        search.focus()
+        search.addEventListener('input', () => render(list, search.value))
+        search.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowDown') highlight(list, active + 1)
+          else if (e.key === 'ArrowUp') highlight(list, active - 1)
+          else if (e.key === 'Enter' && shown[active]) choose(shown[active])
+          else if (e.key === 'Escape' || e.key === 'Tab') close(e.key === 'Escape')
+          else return
+          e.preventDefault()
+        })
+        search.addEventListener('blur', () => setTimeout(() => panel && !panel.contains(document.activeElement) && close(false)))
+      }
+      // Block the system list on mousedown, open ours on click (after the browser has moved focus)
+      select.addEventListener('mousedown', (e) => e.preventDefault())
+      select.addEventListener('click', (e) => {
+        e.preventDefault()
+        open()
+      })
+      select.addEventListener('keydown', (e) => {
+        if (['Enter', ' ', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
+          e.preventDefault()
+          open()
+        }
+      })
+    })
+  }
+
   // Progressive enhancement: submit without a page reload when JS is available.
   document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
     const status = form.querySelector<HTMLElement>('[data-status]')!
@@ -167,9 +257,72 @@ const consentText =
     word-spacing: var(--caps-word-spacing);
     cursor: pointer;
   }
-  /* Native select: the browser draws the arrow and the option list (dark, via color-scheme) */
   select {
+    appearance: none;
+    padding-right: 32px;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23fff'/%3E%3C/svg%3E") no-repeat right 12px center;
+    border-radius: 0;
     cursor: pointer;
+  }
+  select option {
+    background: #000;
+    color: #fff;
+  }
+  /* Custom country list (desktop). Phones keep the system picker */
+  .country {
+    position: relative;
+  }
+  .country :global(.picker) {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% - 1px);
+    left: 0;
+    right: 0;
+    min-width: 240px;
+    border: 1px solid #fff;
+    background: #000;
+    animation: picker-in 0.18s ease both;
+  }
+  @keyframes picker-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+  .country :global(.picker input) {
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.4);
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    outline: none;
+  }
+  .country :global(.picker ul) {
+    max-height: 260px;
+    margin: 0;
+    padding: 4px 0;
+    overflow-y: auto;
+    list-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: #fff #000;
+  }
+  .country :global(.picker li) {
+    padding: 7px 12px;
+    cursor: pointer;
+  }
+  .country :global(.picker li[aria-selected='true']) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .country :global(.picker li.active) {
+    background: #fff;
+    color: #000;
+  }
+  .country :global(.picker .empty) {
+    padding: 7px 12px;
+    opacity: 0.6;
   }
   input::placeholder {
     color: #fff;
