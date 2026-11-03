@@ -157,6 +157,9 @@ const consentText =
         list.role = 'listbox'
         panel.append(search, list)
         wrap.append(panel)
+        // Open upwards when there isn't room below
+        const r = wrap.getBoundingClientRect()
+        panel.classList.toggle('up', innerHeight - r.bottom < 320 && r.top > innerHeight - r.bottom)
         render(list, '')
         search.focus()
         search.addEventListener('input', () => render(list, search.value))
@@ -288,6 +291,16 @@ const consentText =
       opacity: 0;
       transform: translateY(-4px);
     }
+  }
+  .country :global(.picker.up) {
+    top: auto;
+    bottom: calc(100% - 1px);
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .country :global(.picker.up input) {
+    border-bottom: 0;
+    border-top: 1px solid rgb(255 255 255 / 0.4);
   }
   .country :global(.picker input) {
     width: 100%;

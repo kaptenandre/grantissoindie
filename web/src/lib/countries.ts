@@ -8,6 +8,8 @@ export function countries(): {code: string; name: string}[] {
     for (let b = 65; b <= 90; b++) {
       const code = String.fromCharCode(a, b)
       if (NOT_COUNTRIES.has(code)) continue
+      // Skip retired codes (UK, YD, RH...) that just alias a current one and would show up twice
+      if (Intl.getCanonicalLocales(`und-${code}`)[0] !== `und-${code}`) continue
       const name = names.of(code)
       if (name && name !== code) out.push({code, name})
     }

@@ -5,7 +5,7 @@ export const album = {
   label: 'Skolhaus',
   // TODO: real links when Linkfire/store are set up
   presaveUrl: '',
-  preorderUrl: '',
+  preorderUrl: 'https://shop.skolhaus.com/products/grant-triptyk-lp',
   vinyl: {
     format: '12" vinyl LP',
     catalogue: 'SH030LP',
