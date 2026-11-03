@@ -51,9 +51,9 @@ export const album = {
     'The Last One',
     'Waking The Witch',
   ],
-  /** Music videos embedded on the page, newest first */
+  /** Music videos embedded on the page, newest first. aspect = the video's own ratio (Baby is wider than 16:9) */
   musicVideos: [
-    {id: 'dd1zAPjtWSU', title: 'Baby (Official Video)'},
-    {id: 'zv1ncAiVLuo', title: 'C’mon Caroline (Official Video)'},
+    {id: 'dd1zAPjtWSU', title: 'Baby (Official Video)', aspect: '1280 / 664'},
+    {id: 'zv1ncAiVLuo', title: 'C’mon Caroline (Official Video)', aspect: '16 / 9'},
   ],
 }
