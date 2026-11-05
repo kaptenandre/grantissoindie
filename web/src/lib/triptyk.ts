@@ -16,16 +16,16 @@ export const album = {
   single: {
     title: 'Baby / Baby Pt. 2',
     releaseDate: '2026-11-05',
-    // Out 5 Nov. Tidal, YouTube Music and Amazon still go via Linkfire until their direct links are known
+    // Out 5 Nov. Direct links from skolhaus.lnk.to/baby
     releaseAt: '2026-11-02T00:00:00Z',
     smartLink: 'https://skolhaus.lnk.to/baby',
     streamingLinks: [
       {platform: 'spotify', url: 'https://open.spotify.com/album/3L6eKwIWVOxRaLOIuQTsxp'},
       {platform: 'appleMusic', url: 'https://music.apple.com/se/album/baby-baby-pt-2-single/6816772244'},
-      {platform: 'tidal', url: 'https://skolhaus.lnk.to/baby'},
-      {platform: 'youtubeMusic', url: 'https://skolhaus.lnk.to/baby'},
+      {platform: 'tidal', url: 'https://tidal.com/album/564037881'},
+      {platform: 'youtubeMusic', url: 'https://music.youtube.com/playlist?list=OLAK5uy_mwlZrYMQzWrgLWgj6AUwnG9kaFNb-ww5s'},
       {platform: 'deezer', url: 'https://www.deezer.com/album/1104344682'},
-      {platform: 'amazonMusic', url: 'https://skolhaus.lnk.to/baby'},
+      {platform: 'amazonMusic', url: 'https://music.amazon.com/albums/B0HKWVJ6S2'},
     ] as {platform: string; url: string}[],
   },
   video: {
