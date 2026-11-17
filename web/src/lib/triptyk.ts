@@ -53,6 +53,7 @@ export const album = {
   ],
   /** Music videos embedded on the page, newest first. aspect = the video's own ratio (Baby is wider than 16:9) */
   musicVideos: [
+    {id: 'M5W9DSxEhIw', title: 'Baby Pt. 2 (Official Video)', aspect: '16 / 9'},
     {id: 'dd1zAPjtWSU', title: 'Baby (Official Video)', aspect: '1280 / 664'},
     {id: 'zv1ncAiVLuo', title: 'C’mon Caroline (Official Video)', aspect: '16 / 9'},
   ],
